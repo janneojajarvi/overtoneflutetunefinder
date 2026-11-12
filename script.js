@@ -726,39 +726,110 @@ document.getElementById('fixNotesBtn2').onclick = function() {
     var pitchNames = ['C','^C','D','^D','E','F','^F','G','^G','A','^A','B'];
     var lines = abcInput.value.split('\n');
     
+    var keyAccidentals = {};
+    var barAccidentals = {};
     var allNotesTransposed = [];
+
+    // Ensimmäinen kierros: kerätään nuotit huomioiden etumerkit
     lines.forEach(line => {
-        if (/^[A-Z]:/.test(line) || line.trim().startsWith('w:')) return;
-        var m;
-        var noteRegex = /([\^_=]?)([A-Ga-g])([,']*)([0-9\/]*)/g;
-        while ((m = noteRegex.exec(line)) !== null) {
-            var v = getPitchValue(m[2]);
-            if (m[1] === '^') v++;
-            if (m[1] === '_') v--;
-            for (var j=0; j<m[3].length; j++){
-                if (m[3][j] === ',') v -= 12;
-                if (m[3][j] === "'") v += 12;
+        if (/^[A-Z]:/.test(line)) {
+            if (line.startsWith('K:')) {
+                var keyMatch = line.match(/^K:\s*([A-G][b#]?)\s*(.*)/i);
+                if (keyMatch) {
+                    keyAccidentals = getKeyAccidentals(keyMatch[1], keyMatch[2].trim());
+                }
             }
-            allNotesTransposed.push(v + (window.currentOctave*12) + window.currentTranspose - 2);
+            return;
+        }
+        if (line.trim().startsWith('w:')) return;
+
+        barAccidentals = {};
+        var noteRegex = /([|])|([\^_=]?)([A-Ga-g])([,']*)([0-9\/]*)/g;
+        var m;
+        while ((m = noteRegex.exec(line)) !== null) {
+            if (m[1] === '|') {
+                barAccidentals = {};
+                continue;
+            }
+            var acc = m[2];
+            var noteName = m[3];
+            var octs = m[4];
+            var v = getPitchValue(noteName);
+            var stepInOctave = noteName.toUpperCase();
+
+            if (acc === '^') {
+                v++;
+                barAccidentals[stepInOctave] = 1;
+            } else if (acc === '_') {
+                v--;
+                barAccidentals[stepInOctave] = -1;
+            } else if (acc === '=') {
+                barAccidentals[stepInOctave] = 0;
+            } else {
+                if (barAccidentals.hasOwnProperty(stepInOctave)) {
+                    v += barAccidentals[stepInOctave];
+                } else if (keyAccidentals[stepInOctave]) {
+                    v += keyAccidentals[stepInOctave];
+                }
+            }
+
+            for (var j = 0; j < octs.length; j++) {
+                if (octs[j] === ',') v -= 12;
+                if (octs[j] === "'") v += 12;
+            }
+            allNotesTransposed.push(v + (window.currentOctave * 12) + window.currentTranspose - 2);
         }
     });
 
     var globalNoteCounter = 0;
     var lastStep = null;
+    keyAccidentals = {};
 
+    // Toinen kierros: varsinainen korjaus
     var fixedLines = lines.map(function(line){
-        if (/^[A-Z]:/.test(line) || line.trim().startsWith('w:')) return line;
+        if (/^[A-Z]:/.test(line)) {
+            if (line.startsWith('K:')) {
+                var keyMatch = line.match(/^K:\s*([A-G][b#]?)\s*(.*)/i);
+                if (keyMatch) {
+                    keyAccidentals = getKeyAccidentals(keyMatch[1], keyMatch[2].trim());
+                }
+            }
+            return line;
+        }
+        if (line.trim().startsWith('w:')) return line;
 
-        return line.replace(/([\^_=]?)([A-Ga-g])([,']*)([0-9\/]*)/g, function(match, acc, note, octs, dur){
+        barAccidentals = {};
+        return line.replace(/([|])|([\^_=]?)([A-Ga-g])([,']*)([0-9\/]*)/g, function(match, bar, acc, note, octs, dur){
+            if (bar === '|') {
+                barAccidentals = {};
+                return match;
+            }
+
             var v = getPitchValue(note);
-            if (acc === '^') v++;
-            if (acc === '_') v--;
-            for (var j=0; j<octs.length; j++){
+            var stepInOctave = note.toUpperCase();
+
+            if (acc === '^') {
+                v++;
+                barAccidentals[stepInOctave] = 1;
+            } else if (acc === '_') {
+                v--;
+                barAccidentals[stepInOctave] = -1;
+            } else if (acc === '=') {
+                barAccidentals[stepInOctave] = 0;
+            } else {
+                if (barAccidentals.hasOwnProperty(stepInOctave)) {
+                    v += barAccidentals[stepInOctave];
+                } else if (keyAccidentals[stepInOctave]) {
+                    v += keyAccidentals[stepInOctave];
+                }
+            }
+
+            for (var j = 0; j < octs.length; j++) {
                 if (octs[j] === ',') v -= 12;
                 if (octs[j] === "'") v += 12;
             }
 
-            var step = v + (window.currentOctave*12) + window.currentTranspose - 2;
+            var step = v + (window.currentOctave * 12) + window.currentTranspose - 2;
             var nextStepInSong = allNotesTransposed[globalNoteCounter + 1];
             globalNoteCounter++;
 
@@ -790,7 +861,7 @@ document.getElementById('fixNotesBtn2').onclick = function() {
 
             lastStep = bestReplacement;
 
-            var newPitch = (bestReplacement + 2) - (window.currentOctave*12) - window.currentTranspose;
+            var newPitch = (bestReplacement + 2) - (window.currentOctave * 12) - window.currentTranspose;
             var absPitch = ((newPitch % 12) + 12) % 12;
             var octShift = Math.floor(newPitch / 12);
             var rawName = pitchNames[absPitch];
@@ -811,6 +882,7 @@ document.getElementById('fixNotesBtn2').onclick = function() {
     abcInput.value = fixedLines.join('\n');
     if (typeof processAbc === "function") processAbc();
 };
+
 
 document.getElementById('fixNotesBtn3').onclick = function() {
     lastOriginalAbc = document.getElementById('abcInput').value;
