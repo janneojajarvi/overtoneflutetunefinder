@@ -730,7 +730,6 @@ document.getElementById('fixNotesBtn2').onclick = function() {
     var barAccidentals = {};
     var allNotesTransposed = [];
 
-    // Ensimmäinen kierros: kerätään nuotit huomioiden etumerkit
     lines.forEach(line => {
         if (/^[A-Z]:/.test(line)) {
             if (line.startsWith('K:')) {
@@ -785,7 +784,6 @@ document.getElementById('fixNotesBtn2').onclick = function() {
     var lastStep = null;
     keyAccidentals = {};
 
-    // Toinen kierros: varsinainen korjaus
     var fixedLines = lines.map(function(line){
         if (/^[A-Z]:/.test(line)) {
             if (line.startsWith('K:')) {
@@ -830,22 +828,16 @@ document.getElementById('fixNotesBtn2').onclick = function() {
             }
 
             var step = v + (window.currentOctave * 12) + window.currentTranspose - 2;
-
-
-// Vain jos kyseessä on puhtaasti F-duurin/mollin b-sävel (B-flat), joka osuu step 17
-            var isKeyFlatB = (note.toLowerCase() === 'b' && !explicitAcc && !barAccidentals[stepInOctave + "_explicit"] && (keyAccidentals['B'] === -1));
-            if (isKeyFlatB && step === 17) {
-                return "^g" + dur;
-            }
-
             var nextStepInSong = allNotesTransposed[globalNoteCounter + 1];
             globalNoteCounter++;
 
+            // Jos nuotti on jo valmiiksi sallittu, ei kosketa siihen
             if (playable.indexOf(step) !== -1) {
                 lastStep = step;
                 return match;
             }
 
+            // Etsitään musikaalisesti paras korvaava sävel huilun yläsävelsarjasta
             var bestReplacement = playable.reduce(function(prev, curr) {
                 var scorePrev = Math.abs(prev - step);
                 var scoreCurr = Math.abs(curr - step);
@@ -890,6 +882,7 @@ document.getElementById('fixNotesBtn2').onclick = function() {
     abcInput.value = fixedLines.join('\n');
     if (typeof processAbc === "function") processAbc();
 };
+
 
 
 document.getElementById('fixNotesBtn3').onclick = function() {
