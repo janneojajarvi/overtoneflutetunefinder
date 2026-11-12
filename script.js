@@ -830,6 +830,11 @@ document.getElementById('fixNotesBtn2').onclick = function() {
             }
 
             var step = v + (window.currentOctave * 12) + window.currentTranspose - 2;
+
+ // ERIKOISSÄÄNTÖ: G natural (step 17) muutetaan G# (^_g)
+            if (step === 17) {
+                return "^g" + dur;
+            }
             var nextStepInSong = allNotesTransposed[globalNoteCounter + 1];
             globalNoteCounter++;
 
@@ -995,6 +1000,12 @@ document.getElementById('fixNotesBtn3').onclick = function() {
             }
 
             var step = v + (window.currentOctave * 12) + window.currentTranspose - 2;
+
+// ERIKOISSÄÄNTÖ: G natural (step 17) muutetaan G#
+            if (step === 17) {
+                return "^g" + dur;
+            }
+
             var nextStepInSong = allNotesTransposed[globalNoteCounter + 1];
             globalNoteCounter++;
             
