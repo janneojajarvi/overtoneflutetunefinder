@@ -259,7 +259,8 @@ function processAbc() {
       
     var lines = raw.split('\n');  
     for (var i = 0; i < lines.length; i++) {  
-        var line = lines[i];  
+        // POISTETAAN RIVIN LOPUN KENOVIIVA ( \ ) automaattisesti, ettei tabulatuurit/w-rivit mene rikki
+        var line = lines[i].replace(/\\\s*$/, '');  
         
         if (line.trim().startsWith('w:')) continue;  
           
