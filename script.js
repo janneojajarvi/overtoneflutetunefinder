@@ -848,55 +848,56 @@ document.getElementById('fixNotesBtn2').onclick = function() {
             var nextStepInSong = allNotesTransposed[globalNoteCounter + 1];
             globalNoteCounter++;
 
-            // Jos nuotti on jo valmiiksi sallittu, ei kosketa siihen
-            if (playable.indexOf(step) !== -1) {
-                lastStep = step;
-                return match;
+            // Jos nuotti on jo valmiiksi sallittu, tarkistetaan kuitenkin transponoidun tuloksen kautta,
+            // onko kyseessä g, joka halutaan musikaalisista syistä ylentää.
+            var targetStep = step;
+            var isAlreadyPlayable = (playable.indexOf(step) !== -1);
+
+            if (!isAlreadyPlayable) {
+                // Etsitään musikaalisesti paras korvaava sävel huilun yläsävelsarjasta
+                targetStep = playable.reduce(function(prev, curr) {
+                    var scorePrev = Math.abs(prev - step);
+                    var scoreCurr = Math.abs(curr - step);
+
+                    if (lastStep !== null) {
+                        var originalDir = step - lastStep; 
+                        var newDir = curr - lastStep;
+                        if ((originalDir > 0 && newDir > 0) || (originalDir < 0 && newDir < 0)) scoreCurr -= 1.0;
+                    }
+
+                    if (nextStepInSong !== undefined && curr === nextStepInSong) {
+                        if (step !== nextStepInSong) scoreCurr += 10.0; 
+                    }
+
+                    if (curr % 12 === 7) scoreCurr -= 1.0; // Suosi A
+                    if (curr % 12 === 0) scoreCurr -= 0.8; // Suosi D
+                    
+                    // RASKAAN SARJAN SAKKO YLENNYKSILLE: Estää ohjelmaa keksimästä vääriä ^d -korotuksia!
+                    if (curr % 12 === 8 || curr % 12 === 1 || curr % 12 === 3 || curr % 12 === 6 || curr % 12 === 10) {
+                        scoreCurr += 15.0; 
+                    }
+
+                    return scoreCurr < scorePrev ? curr : prev;
+                });
             }
 
-            // Etsitään musikaalisesti paras korvaava sävel huilun yläsävelsarjasta
-            var bestReplacement = playable.reduce(function(prev, curr) {
-                var scorePrev = Math.abs(prev - step);
-                var scoreCurr = Math.abs(curr - step);
+            lastStep = targetStep;
 
-                if (lastStep !== null) {
-                    var originalDir = step - lastStep; 
-                    var newDir = curr - lastStep;
-                    if ((originalDir > 0 && newDir > 0) || (originalDir < 0 && newDir < 0)) scoreCurr -= 1.0;
-                }
-
-                if (nextStepInSong !== undefined && curr === nextStepInSong) {
-                    if (step !== nextStepInSong) scoreCurr += 10.0; 
-                }
-
-                if (curr % 12 === 7) scoreCurr -= 1.0; // Suosi A
-                if (curr % 12 === 0) scoreCurr -= 0.8; // Suosi D
-                
-                // RASKAAN SARJAN SAKKO YLENNYKSILLE: Estää ohjelmaa keksimästä vääriä ^d -korotuksia!
-                if (curr % 12 === 8 || curr % 12 === 1 || curr % 12 === 3 || curr % 12 === 6 || curr % 12 === 10) {
-                    scoreCurr += 15.0; 
-                }
-
-                return scoreCurr < scorePrev ? curr : prev;
-            });
-
-            lastStep = bestReplacement;
-
-            var newPitch = (bestReplacement + 2) - (window.currentOctave * 12) - window.currentTranspose;
+            var newPitch = (targetStep + 2) - (window.currentOctave * 12) - window.currentTranspose;
             var absPitch = ((newPitch % 12) + 12) % 12;
             var octShift = Math.floor(newPitch / 12);
             var rawName = pitchNames[absPitch];
             
             var finalAcc = "";
             if (rawName.startsWith('^')) { finalAcc = "^"; rawName = rawName.substring(1); }
-            
-            // --- TRANSPONOINNIN JA LASKENNAN JÄLKEINEN G -> G# SÄÄNTÖ ---
-            // Vain jos transponoinnin/laskennan lopputuloksena oleva nuotti on puhdas 'g' (tai 'G'),
+
+            // --- TRANSPONOINNIN JÄLKEINEN LOPPUTARKISTUS (G -> G#) ---
+            // Jos transponoinnin ja laskennan lopputuloksena oleva nuotti on puhdas 'g' tai 'G',
             // se pakotetaan musikaalisista syistä aina ylennetyksi (^g / ^G).
-            if ((rawName === 'g' || rawName === 'G') && finalAcc === "") {
+            if (rawName === 'g' || rawName === 'G') {
                 finalAcc = "^";
             }
-
+            
             if (octShift > 0) {
                 rawName = rawName.toLowerCase();
                 octShift--;
