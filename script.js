@@ -1046,9 +1046,13 @@ document.getElementById('fixNotesBtn3').onclick = function() {
                     if (step !== nextStepInSong) scoreCurr += 10.0;
                 }
                 
-                if (curr % 12 === 7) scoreCurr -= 1.0; 
-                if (curr % 12 === 0) scoreCurr -= 0.8; 
-                if (curr % 12 === 8 || curr % 12 === 1) scoreCurr += 1.5;
+                 if (curr % 12 === 7) scoreCurr -= 1.0; // Suosi A
+                if (curr % 12 === 0) scoreCurr -= 0.8; // Suosi D
+                
+                // RASKAAN SARJAN SAKKO YLENNYKSILLE: Estää ohjelmaa keksimästä vääriä ^d / ^g -korotuksia!
+                if (curr % 12 === 8 || curr % 12 === 1 || curr % 12 === 3 || curr % 12 === 6 || curr % 12 === 10) {
+                    scoreCurr += 15.0; 
+                }
                 
                 return scoreCurr < scorePrev ? curr : prev;
             });
