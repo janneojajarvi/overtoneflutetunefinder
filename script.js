@@ -266,12 +266,15 @@ function processAbc() {
     var keyAccidentals = {}; 
     var barAccidentals = {}; 
       
-    var lines = raw.split('\n');  
+        var lines = raw.split('\n');  
     for (var i = 0; i < lines.length; i++) {  
-        // POISTETAAN RIVIN LOPUN KENOVIIVA ( \ ) automaattisesti, ettei tabulatuurit/w-rivit mene rikki
-        var line = lines[i].replace(/\\\s*$/, '');  
+        // POISTETAAN RIVIN LOPUN KENOVIIVA ( \ ) ja ylimääräiset välilyönnit automaattisesti
+        var line = lines[i].replace(/\\\s*$/, '').trim();  
         
-        if (line.trim().startsWith('w:')) continue;  
+        // UUSI SUODATUS: Ohitetaan tyhjät rivit, vanhat tabulatuurit (w:) sekä kommentti- ja direktiivirivit (%)
+        if (line === "" || line.startsWith('w:') || line.startsWith('%')) {
+            continue;  
+        }
           
         if (/^[A-Z]:/.test(line) && !line.startsWith('|:')) {  
             if (line.startsWith("Q:")) {
@@ -291,6 +294,7 @@ function processAbc() {
             }
             continue;
         }
+
 
         var wLine = "w:";  
         var foundNotes = false;  
