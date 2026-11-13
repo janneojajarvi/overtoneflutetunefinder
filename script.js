@@ -1,4 +1,4 @@
-window.harpLibrary = [];
+pwindow.harpLibrary = [];
 window.currentOctave = 0;
 window.currentTranspose = 0;
 // Sallitut sävelet D-pitkähuilulle
@@ -843,12 +843,12 @@ document.getElementById('fixNotesBtn2').onclick = function() {
                        var step = v + (window.currentOctave * 12) + window.currentTranspose - 2;
             
             // --- ERIKOISSÄÄNTÖ G-SÄVELELLE ---
-            // Jos kyseessä on g (tai sen oktaaviversiot), joka ei sellaisenaan kuulu avoimeen sarjaan, 
-            // pakotetaan se aina G-ylennetyksi (^g), eikä anneta algoritmin arpoa tilalle muuta (kuten A:ta).
-            if (note.toLowerCase() === 'g' && !acc) {
-                // Lasketaan oikea oktaavimerkintä (^g + mahdolliset pilkut/heittomerkit)
-                return "^" + note + octs + dur;
+                       // --- KORJATTU ERIKOISSÄÄNTÖ G-SÄVELELLE ---
+            // Vain pieni 'g' ilman valmiita etumerkkejä muunnetaan g-ylennetyksi (^g). Isot A-sävelet jätetään rauhaan!
+            if (note === 'g' && !acc) {
+                return "^g" + octs + dur;
             }
+
 
 
 
