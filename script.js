@@ -816,13 +816,6 @@ document.getElementById('fixNotesBtn2').onclick = function() {
                 return match;
             }
 
-            // --- TÄSMÄLLINEN B -> G# SÄÄNTÖ ---
-            // Jos kyseessä on b-sävel ilman valmiita etumerkkejä, se ohjataan suoraan g-ylennetyksi (^g)
-            if (note.toLowerCase() === 'b' && !acc) {
-                var targetNote = (note === 'B') ? '^G' : '^g';
-                return targetNote + octs + dur;
-            }
-
             var v = getPitchValue(note);
             var stepInOctave = note.toUpperCase();
 
@@ -893,11 +886,6 @@ document.getElementById('fixNotesBtn2').onclick = function() {
             
             var finalAcc = "";
             if (rawName.startsWith('^')) { finalAcc = "^"; rawName = rawName.substring(1); }
-
-            // Varmistus: jos lopputulokseksi tulee pieni puhdas g, se ylennetään
-            if (rawName === 'G' && finalAcc === "" && (note === 'g' || octShift === 0)) {
-                finalAcc = "^";
-            }
             
             if (octShift > 0) {
                 rawName = rawName.toLowerCase();
