@@ -848,29 +848,47 @@ document.getElementById('fixNotesBtn2').onclick = function() {
             var nextStepInSong = allNotesTransposed[globalNoteCounter + 1];
             globalNoteCounter++;
 
-            // 1. Jos nuotti on transponoinnin jälkeen valmiiksi sallittu pitkähuilulle, ei kosketa siihen
+            // --- ERITYISSÄÄNTÖ: JOS TÄMÄ SÄVEL ON TRANSPONOINNIN JÄLKEEN G (Pitch Class 7) ---
+            var transPitch = v + (window.currentOctave * 12) + window.currentTranspose;
+            var transPitchClass = ((transPitch % 12) + 12) % 12;
+
+            if (transPitchClass === 7 && acc !== '^') {
+                // Etsitään lähin sallittu G# (^g) pitkähuilun asteikosta (step % 12 === 6)
+                var targetGsharpSteps = playable.filter(function(s) { return ((s % 12) + 12) % 12 === 6; });
+                var bestGsharp = targetGsharpSteps.reduce(function(prev, curr) {
+                    return Math.abs(curr - step) < Math.abs(prev - step) ? curr : prev;
+                }, targetGsharpSteps[0]);
+
+                if (bestGsharp !== undefined) {
+                    lastStep = bestGsharp;
+                    var newPitch = (bestGsharp + 2) - (window.currentOctave * 12) - window.currentTranspose;
+                    var absPitch = ((newPitch % 12) + 12) % 12;
+                    var octShift = Math.floor(newPitch / 12);
+                    var rawName = pitchNames[absPitch];
+                    
+                    var finalAcc = "";
+                    if (rawName.startsWith('^')) { 
+                        finalAcc = "^"; 
+                        rawName = rawName.substring(1); 
+                    }
+                    
+                    if (octShift > 0) {
+                        rawName = rawName.toLowerCase();
+                        octShift--;
+                    }
+                    var octaveMarks = (octShift > 0) ? "'".repeat(octShift) : (octShift < 0 ? ",".repeat(Math.abs(octShift)) : "");
+                    
+                    return finalAcc + rawName + octaveMarks + dur;
+                }
+            }
+
+            // 1. Jos nuotti on transponoinnin jälkeen valmiiksi sallittu pitkähuilulla, ei kosketa siihen
             if (playable.indexOf(step) !== -1) {
                 lastStep = step;
                 return match;
             }
 
-            // 2. ABSOLUUTTINEN G-SÄÄNTÖ TRANSPONOINNIN JÄLKEEN:
-            // Lasketaan mikä sävel on kyseessä transponoidussa asteikossa (semitoniarvo 0-11).
-            // Jos transponoitu sävel osuu puhtaan G:n paikalle (modulo 12 === 7) eikä siinä ole jo ylennystä,
-            // se pakotetaan aina g#:ksi (^g) eikä sitä anneta etäisyysalgoritmin käännettäväksi A:ksi.
-            var transMod12 = ((step % 12) + 12) % 12;
-            if (transMod12 === 7 && acc !== '^') {
-                lastStep = step;
-                var noteObjPitch = step - (window.currentOctave * 12) - window.currentTranspose + 2;
-                var absP = ((noteObjPitch % 12) + 12) % 12;
-                var oSh = Math.floor(noteObjPitch / 12);
-                var rName = pitchNames[absP].toLowerCase();
-                if (oSh > 0) { oSh--; }
-                var oMarks = (oSh > 0) ? "'".repeat(oSh) : (oSh < 0 ? ",".repeat(Math.abs(oSh)) : "");
-                return "^" + rName + oMarks + dur;
-            }
-
-            // 3. Muille epäkelvoille nuoteille etsitään etäisyyspohjainen korvaava sävel
+            // 2. Muille epäkelvoille nuoteille etsitään etäisyyspohjainen korvaava sävel
             var bestReplacement = playable.reduce(function(prev, curr) {
                 var scorePrev = Math.abs(prev - step);
                 var scoreCurr = Math.abs(curr - step);
