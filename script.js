@@ -848,29 +848,29 @@ document.getElementById('fixNotesBtn2').onclick = function() {
             var nextStepInSong = allNotesTransposed[globalNoteCounter + 1];
             globalNoteCounter++;
 
-            // --- LOPULLINEN JA TÄSMÄLLINEN G-SÄÄNTÖ TRANSPONOINNIN JÄLKEEN ---
-            // Lasketaan mitä säveleksi tämä muuttuu transponoinnin jälkeen ennen mitään korjauksia
-            var testPitch = (step + 2) - (window.currentOctave * 12) - window.currentTranspose;
-            var testAbs = ((testPitch % 12) + 12) % 12;
-            var testOct = Math.floor(testPitch / 12);
-            var testName = pitchNames[testAbs];
-
-            // Jos transponoitu lopputulos on puhdas g (ja ilman valmista ylennystä), 
-            // se pakotetaan välittömästi g#:ksi (^g) eikä sitä päästetä A:ksi.
-            if ((testName === 'g' || testName === 'G') && acc !== '^') {
-                lastStep = step;
-                var tName = (testName === 'G') ? 'G' : 'g';
-                var tOct = (testOct > 0) ? "'".repeat(testOct) : (testOct < 0 ? ",".repeat(Math.abs(testOct)) : "");
-                return "^" + tName + tOct + dur;
-            }
-
-            // Jos nuotti on muuten valmiiksi sallittu, ei kosketa siihen
+            // 1. Jos nuotti on transponoinnin jälkeen valmiiksi sallittu pitkähuilulle, ei kosketa siihen
             if (playable.indexOf(step) !== -1) {
                 lastStep = step;
                 return match;
             }
 
-            // Etsitään musikaalisesti paras korvaava sävel huilun yläsävelsarjasta
+            // 2. ABSOLUUTTINEN G-SÄÄNTÖ TRANSPONOINNIN JÄLKEEN:
+            // Lasketaan mikä sävel on kyseessä transponoidussa asteikossa (semitoniarvo 0-11).
+            // Jos transponoitu sävel osuu puhtaan G:n paikalle (modulo 12 === 7) eikä siinä ole jo ylennystä,
+            // se pakotetaan aina g#:ksi (^g) eikä sitä anneta etäisyysalgoritmin käännettäväksi A:ksi.
+            var transMod12 = ((step % 12) + 12) % 12;
+            if (transMod12 === 7 && acc !== '^') {
+                lastStep = step;
+                var noteObjPitch = step - (window.currentOctave * 12) - window.currentTranspose + 2;
+                var absP = ((noteObjPitch % 12) + 12) % 12;
+                var oSh = Math.floor(noteObjPitch / 12);
+                var rName = pitchNames[absP].toLowerCase();
+                if (oSh > 0) { oSh--; }
+                var oMarks = (oSh > 0) ? "'".repeat(oSh) : (oSh < 0 ? ",".repeat(Math.abs(oSh)) : "");
+                return "^" + rName + oMarks + dur;
+            }
+
+            // 3. Muille epäkelvoille nuoteille etsitään etäisyyspohjainen korvaava sävel
             var bestReplacement = playable.reduce(function(prev, curr) {
                 var scorePrev = Math.abs(prev - step);
                 var scoreCurr = Math.abs(curr - step);
