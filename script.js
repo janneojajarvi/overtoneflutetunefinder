@@ -844,16 +844,15 @@ document.getElementById('fixNotesBtn2').onclick = function() {
             }
 
             var step = v + (window.currentOctave * 12) + window.currentTranspose - 2;
-            
             var nextStepInSong = allNotesTransposed[globalNoteCounter + 1];
             globalNoteCounter++;
 
-            // --- ERITYISSÄÄNTÖ: JOS TÄMÄ SÄVEL ON TRANSPONOINNIN JÄLKEEN G (Pitch Class 7) ---
-            var transPitch = v + (window.currentOctave * 12) + window.currentTranspose;
-            var transPitchClass = ((transPitch % 12) + 12) % 12;
-
+            // --- EHDOTON JA ENSIMMÄINEN SÄÄNTÖ: G-SÄVELEN MUUNNOS G#:KSI ---
+            // Tarkistetaan suoraan transponoidun sävelen pitch class (0-11). 
+            // 7 tarkoittaa G-säveltä. Jos se on G ilman valmista ylennystä, se muutetaan aina ^g:ksi.
+            var transPitchClass = ((step % 12) + 12) % 12;
             if (transPitchClass === 7 && acc !== '^') {
-                // Etsitään lähin sallittu G# (^g) pitkähuilun asteikosta (step % 12 === 6)
+                // Etsitään lähin sallittu G# (^g) pitkähuilun asteikosta (pitch class 6)
                 var targetGsharpSteps = playable.filter(function(s) { return ((s % 12) + 12) % 12 === 6; });
                 var bestGsharp = targetGsharpSteps.reduce(function(prev, curr) {
                     return Math.abs(curr - step) < Math.abs(prev - step) ? curr : prev;
@@ -870,6 +869,9 @@ document.getElementById('fixNotesBtn2').onclick = function() {
                     if (rawName.startsWith('^')) { 
                         finalAcc = "^"; 
                         rawName = rawName.substring(1); 
+                    } else {
+                        finalAcc = "^"; // Pakotetaan ylennys
+                        rawName = "g";
                     }
                     
                     if (octShift > 0) {
@@ -882,13 +884,13 @@ document.getElementById('fixNotesBtn2').onclick = function() {
                 }
             }
 
-            // 1. Jos nuotti on transponoinnin jälkeen valmiiksi sallittu pitkähuilulla, ei kosketa siihen
+            // 2. Jos nuotti on muuten valmiiksi sallittu pitkähuilulla, ei kosketa siihen
             if (playable.indexOf(step) !== -1) {
                 lastStep = step;
                 return match;
             }
 
-            // 2. Muille epäkelvoille nuoteille etsitään etäisyyspohjainen korvaava sävel
+            // 3. Muille epäkelvoille nuoteille etsitään etäisyyspohjainen korvaava sävel
             var bestReplacement = playable.reduce(function(prev, curr) {
                 var scorePrev = Math.abs(prev - step);
                 var scoreCurr = Math.abs(curr - step);
@@ -937,6 +939,7 @@ document.getElementById('fixNotesBtn2').onclick = function() {
     abcInput.value = fixedLines.join('\n');
     if (typeof processAbc === "function") processAbc();
 };
+
 
 
 
