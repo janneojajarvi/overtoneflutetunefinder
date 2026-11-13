@@ -730,6 +730,9 @@ document.getElementById('fixNotesBtn').onclick = function() {
     processAbc();
 };
 
+
+
+
 document.getElementById('fixNotesBtn2').onclick = function() {
     lastOriginalAbc = document.getElementById('abcInput').value;
     showUndo();
@@ -845,8 +848,7 @@ document.getElementById('fixNotesBtn2').onclick = function() {
             var nextStepInSong = allNotesTransposed[globalNoteCounter + 1];
             globalNoteCounter++;
 
-            // Jos nuotti on jo valmiiksi sallittu, ei kosketa siihen (PAITSI jos haluat että alkuperäisetkin g:t pakotetaan, 
-            // mutta tässä oletetaan että korjausnappi tekee korjauksen epäsopiville/muutettaville nuoteille).
+            // Jos nuotti on jo valmiiksi sallittu, ei kosketa siihen
             if (playable.indexOf(step) !== -1) {
                 lastStep = step;
                 return match;
@@ -870,7 +872,7 @@ document.getElementById('fixNotesBtn2').onclick = function() {
                 if (curr % 12 === 7) scoreCurr -= 1.0; // Suosi A
                 if (curr % 12 === 0) scoreCurr -= 0.8; // Suosi D
                 
-                // RASKAAN SARJAN SAKKO YLENNYKSILLE: Estää ohjelmaa keksimästä vääriä ^d / ^g -korotuksia!
+                // RASKAAN SARJAN SAKKO YLENNYKSILLE: Estää ohjelmaa keksimästä vääriä ^d -korotuksia!
                 if (curr % 12 === 8 || curr % 12 === 1 || curr % 12 === 3 || curr % 12 === 6 || curr % 12 === 10) {
                     scoreCurr += 15.0; 
                 }
@@ -888,10 +890,11 @@ document.getElementById('fixNotesBtn2').onclick = function() {
             var finalAcc = "";
             if (rawName.startsWith('^')) { finalAcc = "^"; rawName = rawName.substring(1); }
             
-            // --- MUSIKAALINEN SÄÄNTÖ: Muutetaan korjauksen tuloksena syntyvä A aina g#:ksi (^g) ---
-            if (rawName === 'a' || rawName === 'A') {
+            // --- TRANSPONOINNIN JA LASKENNAN JÄLKEINEN G -> G# SÄÄNTÖ ---
+            // Vain jos transponoinnin/laskennan lopputuloksena oleva nuotti on puhdas 'g' (tai 'G'),
+            // se pakotetaan musikaalisista syistä aina ylennetyksi (^g / ^G).
+            if ((rawName === 'g' || rawName === 'G') && finalAcc === "") {
                 finalAcc = "^";
-                rawName = (rawName === 'A') ? 'G' : 'g'; // nostetaan ylennys g:n eteen
             }
 
             if (octShift > 0) {
@@ -907,6 +910,7 @@ document.getElementById('fixNotesBtn2').onclick = function() {
     abcInput.value = fixedLines.join('\n');
     if (typeof processAbc === "function") processAbc();
 };
+
 
 
 
