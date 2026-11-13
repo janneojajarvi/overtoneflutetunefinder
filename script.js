@@ -841,6 +841,13 @@ document.getElementById('fixNotesBtn2').onclick = function() {
             }
 
             var step = v + (window.currentOctave * 12) + window.currentTranspose - 2;
+
+            // KORJAUSNAPIEN ERIKOISSÄÄNTÖ: Muutetaan g -> g# (^_g) korjausnappeja painettaessa
+            if (note.toLowerCase() === 'g' && !acc && step === 5) { // step 5 vastaa perusg:tä transponoinnin jälkeen
+                return "^g" + dur;
+            }
+
+
             var nextStepInSong = allNotesTransposed[globalNoteCounter + 1];
             globalNoteCounter++;
 
