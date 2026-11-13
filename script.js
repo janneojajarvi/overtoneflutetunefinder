@@ -1,4 +1,4 @@
-pwindow.harpLibrary = [];
+window.harpLibrary = [];
 window.currentOctave = 0;
 window.currentTranspose = 0;
 // Sallitut sävelet D-pitkähuilulle
