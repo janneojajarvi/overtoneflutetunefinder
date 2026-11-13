@@ -897,6 +897,12 @@ document.getElementById('fixNotesBtn2').onclick = function() {
             
             var finalAcc = "";
             if (rawName.startsWith('^')) { finalAcc = "^"; rawName = rawName.substring(1); }
+
+// --- OIKEA G -> G# PAKOTUS ---
+            // Jos lopputulokseksi tulee puhdas G, pakotetaan se aina ylennetyksi G# (^_g)
+            if (rawName === 'G') {
+                finalAcc = "^";
+            }
             
             if (octShift > 0) {
                 rawName = rawName.toLowerCase();
