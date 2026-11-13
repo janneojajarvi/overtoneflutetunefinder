@@ -845,7 +845,8 @@ document.getElementById('fixNotesBtn2').onclick = function() {
             var nextStepInSong = allNotesTransposed[globalNoteCounter + 1];
             globalNoteCounter++;
 
-            // Jos nuotti on jo valmiiksi sallittu, ei kosketa siihen
+            // Jos nuotti on jo valmiiksi sallittu, ei kosketa siihen (PAITSI jos haluat että alkuperäisetkin g:t pakotetaan, 
+            // mutta tässä oletetaan että korjausnappi tekee korjauksen epäsopiville/muutettaville nuoteille).
             if (playable.indexOf(step) !== -1) {
                 lastStep = step;
                 return match;
@@ -887,11 +888,10 @@ document.getElementById('fixNotesBtn2').onclick = function() {
             var finalAcc = "";
             if (rawName.startsWith('^')) { finalAcc = "^"; rawName = rawName.substring(1); }
             
-            // --- TRANSPONOINNIN JÄLKEINEN LOPPUTARKISTUS (G -> G#) ---
-            // Vain jos transponoinnin/korjauksen lopputuloksena oleva nuotti on puhtaan g:n paikalla 
-            // (eikä A, eikä iso G), muutetaan se g#:ksi (^g).
-            if (rawName === 'g' && finalAcc === "") {
+            // --- MUSIKAALINEN SÄÄNTÖ: Muutetaan korjauksen tuloksena syntyvä A aina g#:ksi (^g) ---
+            if (rawName === 'a' || rawName === 'A') {
                 finalAcc = "^";
+                rawName = (rawName === 'A') ? 'G' : 'g'; // nostetaan ylennys g:n eteen
             }
 
             if (octShift > 0) {
