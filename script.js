@@ -842,13 +842,6 @@ document.getElementById('fixNotesBtn2').onclick = function() {
 
             var step = v + (window.currentOctave * 12) + window.currentTranspose - 2;
             
-                        // --- TURVALLINEN G -> G# SÄÄNTÖ ---
-            // Vain jos nuotti on täsmälleen 'g' (ei 'a', ei iso G), se korjataan g#:ksi (^g)
-            if (note === 'g' && !acc) {
-                return "^g" + octs + dur;
-            }
-
-
             var nextStepInSong = allNotesTransposed[globalNoteCounter + 1];
             globalNoteCounter++;
 
@@ -894,6 +887,13 @@ document.getElementById('fixNotesBtn2').onclick = function() {
             var finalAcc = "";
             if (rawName.startsWith('^')) { finalAcc = "^"; rawName = rawName.substring(1); }
             
+            // --- TRANSPONOINNIN JÄLKEINEN LOPPUTARKISTUS (G -> G#) ---
+            // Vain jos transponoinnin/korjauksen lopputuloksena oleva nuotti on puhtaan g:n paikalla 
+            // (eikä A, eikä iso G), muutetaan se g#:ksi (^g).
+            if (rawName === 'g' && finalAcc === "") {
+                finalAcc = "^";
+            }
+
             if (octShift > 0) {
                 rawName = rawName.toLowerCase();
                 octShift--;
@@ -907,6 +907,7 @@ document.getElementById('fixNotesBtn2').onclick = function() {
     abcInput.value = fixedLines.join('\n');
     if (typeof processAbc === "function") processAbc();
 };
+
 
 
 
