@@ -842,6 +842,12 @@ document.getElementById('fixNotesBtn2').onclick = function() {
 
             var step = v + (window.currentOctave * 12) + window.currentTranspose - 2;
             
+            // --- TÄSMÄLLINEN SÄÄNTÖ: Ylimmän viivan päällä oleva g (pieni 'g' ilman heittomerkkejä tai pilkkuja) ---
+            // Musikaalisista syistä tämä halutaan aina korjata g#:ksi (^g).
+            if (note === 'g' && octs === '' && !acc) {
+                return "^g" + octs + dur;
+            }
+
             var nextStepInSong = allNotesTransposed[globalNoteCounter + 1];
             globalNoteCounter++;
 
@@ -900,6 +906,7 @@ document.getElementById('fixNotesBtn2').onclick = function() {
     abcInput.value = fixedLines.join('\n');
     if (typeof processAbc === "function") processAbc();
 };
+
 
 
 
