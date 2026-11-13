@@ -848,13 +848,29 @@ document.getElementById('fixNotesBtn2').onclick = function() {
             var nextStepInSong = allNotesTransposed[globalNoteCounter + 1];
             globalNoteCounter++;
 
-            // 1. Jos nuotti on transponoinnin jälkeen suoraan sallittu pitkähuilulla, ei kosketa siihen
+            // --- LOPULLINEN JA TÄSMÄLLINEN G-SÄÄNTÖ TRANSPONOINNIN JÄLKEEN ---
+            // Lasketaan mitä säveleksi tämä muuttuu transponoinnin jälkeen ennen mitään korjauksia
+            var testPitch = (step + 2) - (window.currentOctave * 12) - window.currentTranspose;
+            var testAbs = ((testPitch % 12) + 12) % 12;
+            var testOct = Math.floor(testPitch / 12);
+            var testName = pitchNames[testAbs];
+
+            // Jos transponoitu lopputulos on puhdas g (ja ilman valmista ylennystä), 
+            // se pakotetaan välittömästi g#:ksi (^g) eikä sitä päästetä A:ksi.
+            if ((testName === 'g' || testName === 'G') && acc !== '^') {
+                lastStep = step;
+                var tName = (testName === 'G') ? 'G' : 'g';
+                var tOct = (testOct > 0) ? "'".repeat(testOct) : (testOct < 0 ? ",".repeat(Math.abs(testOct)) : "");
+                return "^" + tName + tOct + dur;
+            }
+
+            // Jos nuotti on muuten valmiiksi sallittu, ei kosketa siihen
             if (playable.indexOf(step) !== -1) {
                 lastStep = step;
                 return match;
             }
 
-            // Lasketaan mihin sävelehen päädytään transponoinnin ja etäisyyden kautta
+            // Etsitään musikaalisesti paras korvaava sävel huilun yläsävelsarjasta
             var bestReplacement = playable.reduce(function(prev, curr) {
                 var scorePrev = Math.abs(prev - step);
                 var scoreCurr = Math.abs(curr - step);
@@ -889,20 +905,6 @@ document.getElementById('fixNotesBtn2').onclick = function() {
             
             var finalAcc = "";
             if (rawName.startsWith('^')) { finalAcc = "^"; rawName = rawName.substring(1); }
-
-            // --- TRANSPONOINNIN JÄLKEINEN G-TARKISTUS ---
-            // Tarkistetaan, mikä sävel on kyseessä *ennen* mahdollista etäisyyssiirtoa A:ksi.
-            // Jos transponoitu perussävel on g (tai G) ilman etumerkkejä, se pakotetaan aina g#:ksi (^g).
-            var baseNewPitch = (step + 2) - (window.currentOctave * 12) - window.currentTranspose;
-            var baseAbsPitch = ((baseNewPitch % 12) + 12) % 12;
-            var baseOctShift = Math.floor(baseNewPitch / 12);
-            var baseRawName = pitchNames[baseAbsPitch];
-
-            if ((baseRawName === 'g' || baseRawName === 'G') && acc !== '^') {
-                var targetName = (baseRawName === 'G') ? 'G' : 'g';
-                var octMarks = (baseOctShift > 0) ? "'".repeat(baseOctShift) : (baseOctShift < 0 ? ",".repeat(Math.abs(baseOctShift)) : "");
-                return "^" + targetName + octMarks + dur;
-            }
             
             if (octShift > 0) {
                 rawName = rawName.toLowerCase();
