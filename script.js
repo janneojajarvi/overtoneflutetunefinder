@@ -854,14 +854,7 @@ document.getElementById('fixNotesBtn2').onclick = function() {
                 return match;
             }
 
-            // 2. ERITYISSÄÄNTÖ: Nuottiviivaston ylimmän viivan päällä oleva g (pieni 'g' ilman etumerkkejä/oktaavimerkkejä)
-            // korjataan aina suoraan g#:ksi sen sijaan, että algoritmi vaihtaisi sen a:ksi.
-            if (note === 'g' && octs === '' && !acc) {
-                lastStep = step;
-                return "^g" + octs + dur;
-            }
-
-            // 3. Muille epäkelvoille nuoteille etsitään etäisyyspohjainen korvaava sävel huilun sarjasta
+            // Lasketaan mihin sävelehen päädytään transponoinnin ja etäisyyden kautta
             var bestReplacement = playable.reduce(function(prev, curr) {
                 var scorePrev = Math.abs(prev - step);
                 var scoreCurr = Math.abs(curr - step);
@@ -896,6 +889,20 @@ document.getElementById('fixNotesBtn2').onclick = function() {
             
             var finalAcc = "";
             if (rawName.startsWith('^')) { finalAcc = "^"; rawName = rawName.substring(1); }
+
+            // --- TRANSPONOINNIN JÄLKEINEN G-TARKISTUS ---
+            // Tarkistetaan, mikä sävel on kyseessä *ennen* mahdollista etäisyyssiirtoa A:ksi.
+            // Jos transponoitu perussävel on g (tai G) ilman etumerkkejä, se pakotetaan aina g#:ksi (^g).
+            var baseNewPitch = (step + 2) - (window.currentOctave * 12) - window.currentTranspose;
+            var baseAbsPitch = ((baseNewPitch % 12) + 12) % 12;
+            var baseOctShift = Math.floor(baseNewPitch / 12);
+            var baseRawName = pitchNames[baseAbsPitch];
+
+            if ((baseRawName === 'g' || baseRawName === 'G') && acc !== '^') {
+                var targetName = (baseRawName === 'G') ? 'G' : 'g';
+                var octMarks = (baseOctShift > 0) ? "'".repeat(baseOctShift) : (baseOctShift < 0 ? ",".repeat(Math.abs(baseOctShift)) : "");
+                return "^" + targetName + octMarks + dur;
+            }
             
             if (octShift > 0) {
                 rawName = rawName.toLowerCase();
@@ -910,6 +917,7 @@ document.getElementById('fixNotesBtn2').onclick = function() {
     abcInput.value = fixedLines.join('\n');
     if (typeof processAbc === "function") processAbc();
 };
+
 
 
 
