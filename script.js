@@ -929,6 +929,7 @@ document.getElementById('fixNotesBtn2').onclick = function() {
 
 
 
+
 document.getElementById('fixNotesBtn3').onclick = function() {
     lastOriginalAbc = document.getElementById('abcInput').value;
     showUndo();
