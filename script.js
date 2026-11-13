@@ -840,29 +840,26 @@ document.getElementById('fixNotesBtn2').onclick = function() {
                 if (octs[j] === "'") v += 12;
             }
 
-                       var step = v + (window.currentOctave * 12) + window.currentTranspose - 2;
+            var step = v + (window.currentOctave * 12) + window.currentTranspose - 2;
             
-            // --- ERIKOISSÄÄNTÖ G-SÄVELELLE ---
-                       // --- KORJATTU ERIKOISSÄÄNTÖ G-SÄVELELLE ---
-            // Vain pieni 'g' ilman valmiita etumerkkejä muunnetaan g-ylennetyksi (^g). Isot A-sävelet jätetään rauhaan!
-            if (note === 'g' && !acc) {
-                return "^g" + octs + dur;
-            }
-
-
-
-
             var nextStepInSong = allNotesTransposed[globalNoteCounter + 1];
             globalNoteCounter++;
 
             // Jos nuotti on jo valmiiksi sallittu, ei kosketa siihen
             if (playable.indexOf(step) !== -1) {
                 lastStep = step;
+                
+                // Varmistetaan vielä, että jos sallittu nuotti on puhdas g, sekin korjataan g#:ksi
+                var newPitch = (step + 2) - (window.currentOctave * 12) - window.currentTranspose;
+                var absPitch = ((newPitch % 12) + 12) % 12;
+                if (pitchNames[absPitch] === 'G') {
+                    return "^" + note.toLowerCase() + octs + dur;
+                }
                 return match;
             }
 
             // Etsitään musikaalisesti paras korvaava sävel huilun yläsävelsarjasta
-                       var bestReplacement = playable.reduce(function(prev, curr) {
+            var bestReplacement = playable.reduce(function(prev, curr) {
                 var scorePrev = Math.abs(prev - step);
                 var scoreCurr = Math.abs(curr - step);
 
@@ -887,7 +884,6 @@ document.getElementById('fixNotesBtn2').onclick = function() {
                 return scoreCurr < scorePrev ? curr : prev;
             });
 
-
             lastStep = bestReplacement;
 
             var newPitch = (bestReplacement + 2) - (window.currentOctave * 12) - window.currentTranspose;
@@ -898,9 +894,9 @@ document.getElementById('fixNotesBtn2').onclick = function() {
             var finalAcc = "";
             if (rawName.startsWith('^')) { finalAcc = "^"; rawName = rawName.substring(1); }
 
-// --- OIKEA G -> G# PAKOTUS ---
-            // Jos lopputulokseksi tulee puhdas G, pakotetaan se aina ylennetyksi G# (^_g)
-            if (rawName === 'G') {
+            // --- POMMINVARMA LOPPUTARKISTUS ---
+            // Vain jos korjaukseksi tulee puhdas G ilman etumerkkejä, muutetaan se ylennetyksi.
+            if (rawName === 'G' && finalAcc === "") {
                 finalAcc = "^";
             }
             
@@ -917,6 +913,7 @@ document.getElementById('fixNotesBtn2').onclick = function() {
     abcInput.value = fixedLines.join('\n');
     if (typeof processAbc === "function") processAbc();
 };
+
 
 
 
