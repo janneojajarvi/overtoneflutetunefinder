@@ -816,6 +816,13 @@ document.getElementById('fixNotesBtn2').onclick = function() {
                 return match;
             }
 
+            // --- TÄSMÄLLINEN B -> G# SÄÄNTÖ ---
+            // Jos kyseessä on b-sävel ilman valmiita etumerkkejä, se ohjataan suoraan g-ylennetyksi (^g)
+            if (note.toLowerCase() === 'b' && !acc) {
+                var targetNote = (note === 'B') ? '^G' : '^g';
+                return targetNote + octs + dur;
+            }
+
             var v = getPitchValue(note);
             var stepInOctave = note.toUpperCase();
 
@@ -848,13 +855,6 @@ document.getElementById('fixNotesBtn2').onclick = function() {
             // Jos nuotti on jo valmiiksi sallittu, ei kosketa siihen
             if (playable.indexOf(step) !== -1) {
                 lastStep = step;
-                
-                // Varmistetaan vielä, että jos sallittu nuotti on puhdas g, sekin korjataan g#:ksi
-                var newPitch = (step + 2) - (window.currentOctave * 12) - window.currentTranspose;
-                var absPitch = ((newPitch % 12) + 12) % 12;
-                if (pitchNames[absPitch] === 'G') {
-                    return "^" + note.toLowerCase() + octs + dur;
-                }
                 return match;
             }
 
@@ -894,9 +894,8 @@ document.getElementById('fixNotesBtn2').onclick = function() {
             var finalAcc = "";
             if (rawName.startsWith('^')) { finalAcc = "^"; rawName = rawName.substring(1); }
 
-            // --- POMMINVARMA LOPPUTARKISTUS ---
-            // Vain jos korjaukseksi tulee puhdas G ilman etumerkkejä, muutetaan se ylennetyksi.
-            if (rawName === 'G' && finalAcc === "") {
+            // Varmistus: jos lopputulokseksi tulee pieni puhdas g, se ylennetään
+            if (rawName === 'G' && finalAcc === "" && (note === 'g' || octShift === 0)) {
                 finalAcc = "^";
             }
             
@@ -913,6 +912,7 @@ document.getElementById('fixNotesBtn2').onclick = function() {
     abcInput.value = fixedLines.join('\n');
     if (typeof processAbc === "function") processAbc();
 };
+
 
 
 
