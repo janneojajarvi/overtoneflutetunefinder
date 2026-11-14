@@ -257,3 +257,46 @@ body.simple-mode #abc-download {
     display: none !important;
 }
 
+/* --- Responsiivisuus ja kännykkänäkymän korjaukset --- */
+.header-container {
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.search-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+}
+
+@media (max-width: 600px) {
+    body {
+        padding: 10px;
+    }
+
+    .header-container h1 {
+        font-size: 1.5rem;
+        width: 100%;
+        margin-bottom: 5px;
+    }
+
+    /* Poistetaan pakotettu oikeaan reunaan työntö, jotta napit mahtuvat vierekkäin */
+    #toggleAdvancedBtn {
+        margin-left: 0 !important;
+    }
+
+    #searchInput {
+        flex: 1 1 160px;
+        min-width: 0;
+        padding: 8px;
+    }
+
+    .search-bar button,
+    .header-container button {
+        padding: 8px 12px;
+        font-size: 14px;
+    }
+}
+
+
