@@ -252,3 +252,8 @@ body.simple-mode .advanced-only {
     display: none !important;
 }
 
+/* Piilotetaan ABC-latausnappi simple-näkymässä */
+body.simple-mode #abc-download {
+    display: none !important;
+}
+
