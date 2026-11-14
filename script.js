@@ -952,21 +952,23 @@ document.getElementById('fixNotesBtn3').onclick = function() {
     var barAccidentals = {};
     var allNotesTransposed = [];
 
+    // 1. KERÄTÄÄN KAIKKI NUOTIT TRANSPONOITUNA (Sävellaji ja tahtiviivat huomioiden)
     lines.forEach(line => {
-        if (/^[A-Z]:/.test(line)) {
-            if (line.startsWith('K:')) {
-                var keyMatch = line.match(/^K:\s*([A-G][b#]?)\s*(.*)/i);
+        var trimmed = line.trim();
+        if (trimmed.startsWith('w:') || trimmed.startsWith('%')) return;
+        if (/^[A-Z]:/.test(trimmed) && !trimmed.startsWith('|:')) {
+            if (trimmed.startsWith('K:')) {
+                var keyMatch = trimmed.match(/^K:\s*([A-G][b#]?)\s*(.*)/i);
                 if (keyMatch) {
                     keyAccidentals = getKeyAccidentals(keyMatch[1], keyMatch[2].trim());
                 }
             }
             return;
         }
-        if (line.trim().startsWith('w:')) return;
 
         barAccidentals = {};
-        var noteRegex = /([|])|([\^_=]?)([A-Ga-g])([,']*)([0-9\/]*)/g;
         var m;
+        var noteRegex = /([|])|([\^_=]?)([A-Ga-g])([,']*)([0-9\/]*)/g;
         while ((m = noteRegex.exec(line)) !== null) {
             if (m[1] === '|') {
                 barAccidentals = {};
@@ -1006,17 +1008,19 @@ document.getElementById('fixNotesBtn3').onclick = function() {
     var lastStep = null;
     keyAccidentals = {};
 
+    // 2. KÄSITELLÄÄN RIVIT (identtinen fixNotesBtn2:n kanssa)
     var fixedLines = lines.map(function(line){
-        if (/^[A-Z]:/.test(line)) {
-            if (line.startsWith('K:')) {
-                var keyMatch = line.match(/^K:\s*([A-G][b#]?)\s*(.*)/i);
+        var trimmed = line.trim();
+        if (trimmed.startsWith('w:') || trimmed.startsWith('%')) return line;
+        if (/^[A-Z]:/.test(trimmed) && !trimmed.startsWith('|:')) {
+            if (trimmed.startsWith('K:')) {
+                var keyMatch = trimmed.match(/^K:\s*([A-G][b#]?)\s*(.*)/i);
                 if (keyMatch) {
                     keyAccidentals = getKeyAccidentals(keyMatch[1], keyMatch[2].trim());
                 }
             }
             return line;
         }
-        if (line.trim().startsWith('w:')) return line;
 
         barAccidentals = {};
         return line.replace(/([|])|([\^_=]?)([A-Ga-g])([,']*)([0-9\/]*)/g, function(match, bar, acc, note, octs, dur){
@@ -1050,75 +1054,117 @@ document.getElementById('fixNotesBtn3').onclick = function() {
             }
 
             var step = v + (window.currentOctave * 12) + window.currentTranspose - 2;
-
-            // --- TÄSMÄLLINEN G -> G# SÄÄNTÖ ---
-            // Jos transponoinnin lopputuloksena oleva sävel on 17 (mikä vastaa ylimmän viivan päällä olevaa g:tä ilman omaa ylennystä), 
-            // se pakotetaan aina suoraan g#:ksi (^g), eikä sitä päästetä kääntymään a:ksi.
-            if (step === 17 && acc !== '^') {
-                lastStep = 18;
-                return "^g" + dur;
-            }
-
             var nextStepInSong = allNotesTransposed[globalNoteCounter + 1];
             globalNoteCounter++;
-            
-            if (step === 11) step = 10;
-            if (step === 5) step = 6;
 
-            if (playable.indexOf(step) !== -1) {
-                lastStep = step;
-                return convertToAbc(step, dur, pitchNames);
+            // ERITYISSÄÄNTÖ: Jos nuotti on transponoinnin jälkeen ylimmän viivan päällä oleva g (step === 17),
+            // pakotetaan se g#:ksi (step = 18).
+            if (step === 17) {
+                step = 18;
             }
 
-            var bestReplacement = playable.reduce(function(prev, curr) {
-                var scorePrev = Math.abs(prev - step);
-                var scoreCurr = Math.abs(curr - step);
-                
-                if (lastStep !== null) {
-                    var originalDir = step - lastStep; 
-                    var newDir = curr - lastStep;
-                    if ((originalDir > 0 && newDir > 0) || (originalDir < 0 && newDir < 0)) scoreCurr -= 1.0;
-                }
-                
-                if (nextStepInSong !== undefined && curr === nextStepInSong) {
-                    if (step !== nextStepInSong) scoreCurr += 10.0;
-                }
-                
-                if (curr % 12 === 7) scoreCurr -= 1.0; // Suosi A
-                if (curr % 12 === 0) scoreCurr -= 0.8; // Suosi D
-                
-                // RASKAAN SARJAN SAKKO YLENNYKSILLE: Estää ohjelmaa keksimästä vääriä ^d / ^g -korotuksia!
-                if (curr % 12 === 8 || curr % 12 === 1 || curr % 12 === 3 || curr % 12 === 6 || curr % 12 === 10) {
-                    scoreCurr += 15.0; 
-                }
-                
-                return scoreCurr < scorePrev ? curr : prev;
-            });
+            if (playable.indexOf(step) !== -1 && (v + (window.currentOctave * 12) + window.currentTranspose - 2) !== 17) {
+                lastStep = step;
+                return match;
+            }
+
+            var bestReplacement = (v + (window.currentOctave * 12) + window.currentTranspose - 2 === 17) 
+                ? 18 
+                : playable.reduce(function(prev, curr) {
+                    var scorePrev = Math.abs(prev - step);
+                    var scoreCurr = Math.abs(curr - step);
+
+                    if (lastStep !== null) {
+                        var originalDir = step - lastStep; 
+                        var newDir = curr - lastStep;
+                        if ((originalDir > 0 && newDir > 0) || (originalDir < 0 && newDir < 0)) scoreCurr -= 1.0;
+                    }
+
+                    if (nextStepInSong !== undefined && curr === nextStepInSong) {
+                        if (step !== nextStepInSong) scoreCurr += 10.0;
+                    }
+
+                    if (curr % 12 === 7) scoreCurr -= 1.0; // A
+                    if (curr % 12 === 0) scoreCurr -= 0.8; // D
+                    if (curr % 12 === 8 || curr % 12 === 1) scoreCurr += 1.5;
+
+                    return scoreCurr < scorePrev ? curr : prev;
+                });
 
             lastStep = bestReplacement;
-            return convertToAbc(bestReplacement, dur, pitchNames);
+
+            var newPitch = (bestReplacement + 2) - (window.currentOctave * 12) - window.currentTranspose;
+            var absPitch = ((newPitch % 12) + 12) % 12;
+            var octShift = Math.floor(newPitch / 12);
+            var rawName = pitchNames[absPitch];
+            
+            var finalAcc = "";
+            if (rawName.startsWith('^')) { 
+                finalAcc = "^"; 
+                rawName = rawName.substring(1); 
+            }
+
+            var targetBaseLetter = rawName.toUpperCase();
+            if (finalAcc === "" && keyAccidentals[targetBaseLetter]) {
+                finalAcc = "=";
+            }
+            
+            if (octShift > 0) {
+                rawName = rawName.toLowerCase();
+                octShift--;
+            }
+            var octaveMarks = (octShift > 0) ? "'".repeat(octShift) : (octShift < 0 ? ",".repeat(Math.abs(octShift)) : "");
+            
+            return finalAcc + rawName + octaveMarks + dur;
         });
     });
 
-    function convertToAbc(pitchNum, dur, names) {
-        var newPitch = (pitchNum + 2) - (window.currentOctave * 12) - window.currentTranspose;
-        var absPitch = ((newPitch % 12) + 12) % 12;
-        var octShift = Math.floor(newPitch / 12);
-        var rawName = names[absPitch];
-        var finalAcc = "";
-        
-        if (rawName === 'C') finalAcc = "=";
-        if (rawName === 'G') finalAcc = "="; 
-        
-        if (rawName.startsWith('^')) { finalAcc = "^"; rawName = rawName.substring(1); }
-        if (octShift > 0) { rawName = rawName.toLowerCase(); octShift--; }
-        var octaveMarks = (octShift > 0) ? "'".repeat(octShift) : (octShift < 0 ? ",".repeat(Math.abs(octShift)) : "");
-        
-        return finalAcc + rawName + octaveMarks + dur;
-    }
+    // 3. AIVAN VIIMEINEN TOIMINTO: Muutetaan toiseksi ylimmän välin c# (transponoitu step === 11) puhtaaksi c:ksi
+    var finalCleanedLines = fixedLines.map(function(line) {
+        var trimmed = line.trim();
+        if (trimmed.startsWith('w:') || trimmed.startsWith('%') || /^[A-Z]:/.test(trimmed)) {
+            return line;
+        }
 
-    abcInput.value = fixedLines.join('\n');
-    processAbc();
+        // Käydään rivin nuotit läpi ja tarkistetaan niiden lopullinen transponoitu arvo
+        return line.replace(/([\^_=]?)([A-Ga-g])([,']*)([0-9\/]*)/g, function(match, acc, note, octs, dur) {
+            var v = getPitchValue(note);
+            if (acc === '^') v++;
+            if (acc === '_') v--;
+            for (var j = 0; j < octs.length; j++) {
+                if (octs[j] === ',') v -= 12;
+                if (octs[j] === "'") v += 12;
+            }
+
+            var step = v + (window.currentOctave * 12) + window.currentTranspose - 2;
+
+            // Jos nuotti on transponoinnin jälkeen tasan step 11 (toiseksi ylimmän välin c#), muutetaan se c:ksi
+            if (step === 11) {
+                var newPitch = (10 + 2) - (window.currentOctave * 12) - window.currentTranspose; // 10 vastaa puhdasta c:tä
+                var absPitch = ((newPitch % 12) + 12) % 12;
+                var octShift = Math.floor(newPitch / 12);
+                var rawName = pitchNames[absPitch]; // Pitäisi olla C tai c
+                
+                var finalAcc = "";
+                if (keyAccidentals['C']) {
+                    finalAcc = "="; // Palautusmerkki, jos sävellaji vaatisi ristin
+                }
+
+                if (octShift > 0) {
+                    rawName = rawName.toLowerCase();
+                    octShift--;
+                }
+                var octaveMarks = (octShift > 0) ? "'".repeat(octShift) : (octShift < 0 ? ",".repeat(Math.abs(octShift)) : "");
+                
+                return finalAcc + rawName + octaveMarks + dur;
+            }
+
+            return match;
+        });
+    });
+
+    abcInput.value = finalCleanedLines.join('\n');
+    if (typeof processAbc === "function") processAbc();
 };
 
 
