@@ -733,6 +733,7 @@ document.getElementById('fixNotesBtn').onclick = function() {
 
 
 
+// 2. UUSI "Korjaa2"-nappi (Musikaalinen logiikka + sävellajin huomiointi)
 document.getElementById('fixNotesBtn2').onclick = function() {
     lastOriginalAbc = document.getElementById('abcInput').value;
     showUndo();
@@ -746,21 +747,23 @@ document.getElementById('fixNotesBtn2').onclick = function() {
     var barAccidentals = {};
     var allNotesTransposed = [];
 
+    // 1. KERÄTÄÄN KAIKKI NUOTIT TRANSPONOITUNA (Sävellaji ja tahtiviivat huomioiden)
     lines.forEach(line => {
-        if (/^[A-Z]:/.test(line)) {
-            if (line.startsWith('K:')) {
-                var keyMatch = line.match(/^K:\s*([A-G][b#]?)\s*(.*)/i);
+        var trimmed = line.trim();
+        if (trimmed.startsWith('w:') || trimmed.startsWith('%')) return;
+        if (/^[A-Z]:/.test(trimmed) && !trimmed.startsWith('|:')) {
+            if (trimmed.startsWith('K:')) {
+                var keyMatch = trimmed.match(/^K:\s*([A-G][b#]?)\s*(.*)/i);
                 if (keyMatch) {
                     keyAccidentals = getKeyAccidentals(keyMatch[1], keyMatch[2].trim());
                 }
             }
             return;
         }
-        if (line.trim().startsWith('w:')) return;
 
         barAccidentals = {};
-        var noteRegex = /([|])|([\^_=]?)([A-Ga-g])([,']*)([0-9\/]*)/g;
         var m;
+        var noteRegex = /([|])|([\^_=]?)([A-Ga-g])([,']*)([0-9\/]*)/g;
         while ((m = noteRegex.exec(line)) !== null) {
             if (m[1] === '|') {
                 barAccidentals = {};
@@ -800,17 +803,19 @@ document.getElementById('fixNotesBtn2').onclick = function() {
     var lastStep = null;
     keyAccidentals = {};
 
+    // 2. KÄSITELLÄÄN RIVIT
     var fixedLines = lines.map(function(line){
-        if (/^[A-Z]:/.test(line)) {
-            if (line.startsWith('K:')) {
-                var keyMatch = line.match(/^K:\s*([A-G][b#]?)\s*(.*)/i);
+        var trimmed = line.trim();
+        if (trimmed.startsWith('w:') || trimmed.startsWith('%')) return line;
+        if (/^[A-Z]:/.test(trimmed) && !trimmed.startsWith('|:')) {
+            if (trimmed.startsWith('K:')) {
+                var keyMatch = trimmed.match(/^K:\s*([A-G][b#]?)\s*(.*)/i);
                 if (keyMatch) {
                     keyAccidentals = getKeyAccidentals(keyMatch[1], keyMatch[2].trim());
                 }
             }
             return line;
         }
-        if (line.trim().startsWith('w:')) return line;
 
         barAccidentals = {};
         return line.replace(/([|])|([\^_=]?)([A-Ga-g])([,']*)([0-9\/]*)/g, function(match, bar, acc, note, octs, dur){
@@ -847,84 +852,67 @@ document.getElementById('fixNotesBtn2').onclick = function() {
             var nextStepInSong = allNotesTransposed[globalNoteCounter + 1];
             globalNoteCounter++;
 
-            // --- EHDOTON JA ENSIMMÄINEN SÄÄNTÖ: G-SÄVELEN MUUNNOS G#:KSI ---
-            // Tarkistetaan suoraan transponoidun sävelen pitch class (0-11). 
-            // 7 tarkoittaa G-säveltä. Jos se on G ilman valmista ylennystä, se muutetaan aina ^g:ksi.
-            var transPitchClass = ((step % 12) + 12) % 12;
-            if (transPitchClass === 7 && acc !== '^') {
-                // Etsitään lähin sallittu G# (^g) pitkähuilun asteikosta (pitch class 6)
-                var targetGsharpSteps = playable.filter(function(s) { return ((s % 12) + 12) % 12 === 6; });
-                var bestGsharp = targetGsharpSteps.reduce(function(prev, curr) {
-                    return Math.abs(curr - step) < Math.abs(prev - step) ? curr : prev;
-                }, targetGsharpSteps[0]);
-
-                if (bestGsharp !== undefined) {
-                    lastStep = bestGsharp;
-                    var newPitch = (bestGsharp + 2) - (window.currentOctave * 12) - window.currentTranspose;
-                    var absPitch = ((newPitch % 12) + 12) % 12;
-                    var octShift = Math.floor(newPitch / 12);
-                    var rawName = pitchNames[absPitch];
-                    
-                    var finalAcc = "";
-                    if (rawName.startsWith('^')) { 
-                        finalAcc = "^"; 
-                        rawName = rawName.substring(1); 
-                    } else {
-                        finalAcc = "^"; // Pakotetaan ylennys
-                        rawName = "g";
-                    }
-                    
-                    if (octShift > 0) {
-                        rawName = rawName.toLowerCase();
-                        octShift--;
-                    }
-                    var octaveMarks = (octShift > 0) ? "'".repeat(octShift) : (octShift < 0 ? ",".repeat(Math.abs(octShift)) : "");
-                    
-                    return finalAcc + rawName + octaveMarks + dur;
-                }
+            // ERITYISSÄÄNTÖ: Jos nuotti on transponoinnin jälkeen ylimmän viivan päällä oleva g (step === 17),
+            // pakotetaan se g#:ksi (step = 18) sen sijaan, että algoritmi veisi sen a:ksi (19).
+            if (step === 17) {
+                step = 18;
             }
 
-            // 2. Jos nuotti on muuten valmiiksi sallittu pitkähuilulla, ei kosketa siihen
-            if (playable.indexOf(step) !== -1) {
+            // Jos nuotti on jo soitettavissa (eikä muuttunut yllä 17 -> 18), ei muuteta
+            if (playable.indexOf(step) !== -1 && (v + (window.currentOctave * 12) + window.currentTranspose - 2) !== 17) {
                 lastStep = step;
                 return match;
             }
 
-            // 3. Muille epäkelvoille nuoteille etsitään etäisyyspohjainen korvaava sävel
-            var bestReplacement = playable.reduce(function(prev, curr) {
-                var scorePrev = Math.abs(prev - step);
-                var scoreCurr = Math.abs(curr - step);
+            // Valitaan paras korvaaja (jos step pakotettiin 18:ksi, etsitään täsmälleen 18)
+            var bestReplacement = (v + (window.currentOctave * 12) + window.currentTranspose - 2 === 17) 
+                ? 18 
+                : playable.reduce(function(prev, curr) {
+                    var scorePrev = Math.abs(prev - step);
+                    var scoreCurr = Math.abs(curr - step);
 
-                if (lastStep !== null) {
-                    var originalDir = step - lastStep; 
-                    var newDir = curr - lastStep;
-                    if ((originalDir > 0 && newDir > 0) || (originalDir < 0 && newDir < 0)) scoreCurr -= 1.0;
-                }
+                    // Melodian suunta
+                    if (lastStep !== null) {
+                        var originalDir = step - lastStep; 
+                        var newDir = curr - lastStep;
+                        if ((originalDir > 0 && newDir > 0) || (originalDir < 0 && newDir < 0)) scoreCurr -= 1.0;
+                    }
 
-                if (nextStepInSong !== undefined && curr === nextStepInSong) {
-                    if (step !== nextStepInSong) scoreCurr += 10.0; 
-                }
+                    // Toiston esto (Anti-repeteetio)
+                    if (nextStepInSong !== undefined && curr === nextStepInSong) {
+                        if (step !== nextStepInSong) scoreCurr += 10.0;
+                    }
 
-                if (curr % 12 === 7) scoreCurr -= 1.0; // Suosi A
-                if (curr % 12 === 0) scoreCurr -= 0.8; // Suosi D
-                
-                // RASKAAN SARJAN SAKKO YLENNYKSILLE: Estää ohjelmaa keksimästä vääriä ^d -korotuksia!
-                if (curr % 12 === 8 || curr % 12 === 1 || curr % 12 === 3 || curr % 12 === 6 || curr % 12 === 10) {
-                    scoreCurr += 15.0; 
-                }
+                    // Perussävelten veto
+                    if (curr % 12 === 7) scoreCurr -= 1.0; // A
+                    if (curr % 12 === 0) scoreCurr -= 0.8; // D
 
-                return scoreCurr < scorePrev ? curr : prev;
-            });
+                    // Ylennysten välttely
+                    if (curr % 12 === 8 || curr % 12 === 1) scoreCurr += 1.5;
+
+                    return scoreCurr < scorePrev ? curr : prev;
+                });
 
             lastStep = bestReplacement;
 
+            // Muunnos takaisin ABC:ksi (huomioiden sävellajin etumerkki!)
             var newPitch = (bestReplacement + 2) - (window.currentOctave * 12) - window.currentTranspose;
             var absPitch = ((newPitch % 12) + 12) % 12;
             var octShift = Math.floor(newPitch / 12);
             var rawName = pitchNames[absPitch];
             
             var finalAcc = "";
-            if (rawName.startsWith('^')) { finalAcc = "^"; rawName = rawName.substring(1); }
+            if (rawName.startsWith('^')) { 
+                finalAcc = "^"; 
+                rawName = rawName.substring(1); 
+            }
+
+            // Jos sävellajissa tämä kirjain on oletuksena alennettu/ylennetty (esim. F-duurin B on bb),
+            // mutta halutaan puhdas sävel (esim. =b, joka soi transponoituna g#:nä), lisätään palautusmerkki '='
+            var targetBaseLetter = rawName.toUpperCase();
+            if (finalAcc === "" && keyAccidentals[targetBaseLetter]) {
+                finalAcc = "=";
+            }
             
             if (octShift > 0) {
                 rawName = rawName.toLowerCase();
