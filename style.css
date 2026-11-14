@@ -246,3 +246,9 @@ body.focus-mode #focus-container {
 body.focus-mode #exitFocusMode {
     display: block;
 }
+
+/* --- Advanced / Simple -näkyvyyssäännöt --- */
+body.simple-mode .advanced-only {
+    display: none !important;
+}
+
