@@ -1051,9 +1051,11 @@ document.getElementById('fixNotesBtn3').onclick = function() {
 
             var step = v + (window.currentOctave * 12) + window.currentTranspose - 2;
 
-// Vain jos kyseessä on puhtaasti F-duurin/mollin b-sävel (B-flat), joka osuu step 17
-            var isKeyFlatB = (note.toLowerCase() === 'b' && !explicitAcc && !barAccidentals[stepInOctave + "_explicit"] && (keyAccidentals['B'] === -1));
-            if (isKeyFlatB && step === 17) {
+            // --- TÄSMÄLLINEN G -> G# SÄÄNTÖ ---
+            // Jos transponoinnin lopputuloksena oleva sävel on 17 (mikä vastaa ylimmän viivan päällä olevaa g:tä ilman omaa ylennystä), 
+            // se pakotetaan aina suoraan g#:ksi (^g), eikä sitä päästetä kääntymään a:ksi.
+            if (step === 17 && acc !== '^') {
+                lastStep = 18;
                 return "^g" + dur;
             }
 
@@ -1082,7 +1084,7 @@ document.getElementById('fixNotesBtn3').onclick = function() {
                     if (step !== nextStepInSong) scoreCurr += 10.0;
                 }
                 
-                 if (curr % 12 === 7) scoreCurr -= 1.0; // Suosi A
+                if (curr % 12 === 7) scoreCurr -= 1.0; // Suosi A
                 if (curr % 12 === 0) scoreCurr -= 0.8; // Suosi D
                 
                 // RASKAAN SARJAN SAKKO YLENNYKSILLE: Estää ohjelmaa keksimästä vääriä ^d / ^g -korotuksia!
