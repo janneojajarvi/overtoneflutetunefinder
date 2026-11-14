@@ -300,3 +300,10 @@ body.simple-mode #abc-download {
 }
 
 
+body.simple-mode #infoBtn {
+    border-radius: 6px;
+    width: auto;
+    padding: 6px 12px;
+    font-style: normal;
+}
+
