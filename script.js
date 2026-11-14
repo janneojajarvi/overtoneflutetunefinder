@@ -1848,31 +1848,34 @@ if (toggleAdvBtn) {
 }
 
 
-// --- 3. ARVONTA 5: Arvonta 4 + FixNotesBtn3 automaattisesti ---
+// --- ARVONTA 5: Arpoo yhden kappaleen (kuten Arvonta 4) ja tekee heti perään FixBtn3-korjauksen ---
 var randomStrictFixBtn5 = document.getElementById('randomStrictFixBtn5');
 if (randomStrictFixBtn5) {
-    randomStrictFixBtn5.onclick = function() {
+    randomStrictFixBtn5.onclick = async function() {
         hideUndo();
 
-        // Ajetaan Hae 4 / Arvonta 4 -tyyppinen rajoitettu haku 20% virheellä ja max c3
-        if (typeof searchWithSliderAndRangeLimit === "function") {
-            searchWithSliderAndRangeLimit(22);
+        // 1. Suoritetaan oikea satunnaisarvonta (sama logiikka kuin Arvonta 4:ssä)
+        if (typeof randomStrictSearchLimited === "function") {
+            await randomStrictSearchLimited();
         }
 
-        // Korjataan automaattisesti FixBtn3:lla (🤠3)
+        // 2. Tehdään automaattisesti Korjaa 3 (fixNotesBtn3) -korjaus arvotulle kappaleelle
         setTimeout(function() {
             var abcInput = document.getElementById('abcInput');
-            lastOriginalAbc = abcInput.value;
-            
-            var fixBtn3 = document.getElementById('fixNotesBtn3');
-            if (fixBtn3) {
-                fixBtn3.onclick();
+            if (abcInput && abcInput.value.trim() !== "") {
+                lastOriginalAbc = abcInput.value;
+                
+                var fixBtn3 = document.getElementById('fixNotesBtn3');
+                if (fixBtn3) {
+                    fixBtn3.onclick();
+                }
+                
+                if (typeof processAbc === "function") processAbc();
             }
-            
-            if (typeof processAbc === "function") processAbc();
-        }, 70); 
+        }, 100); 
     };
 }
+
 
 
 
