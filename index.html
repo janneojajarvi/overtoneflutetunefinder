@@ -16,6 +16,10 @@
 <div class="header-container">
     <h1>Pitkähuilu-analysaattori v14.0</h1>
     <button id="infoBtn" class="info-circle">i</button>
+    <!-- Advanced / Simple -vaihtonappi otsikon viereen -->
+    <button id="toggleAdvancedBtn" style="margin-left: auto; background: #6c757d; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer;">⚙️ Advanced tools</button>
+</div>
+
 <div id="loadingStatus" style="position:fixed; top:0; left:0; width:100%; background:yellow; text-align:center; padding:5px; z-index:9999; font-weight:bold;">
     Ladataan kirjastoja...
 </div>
@@ -28,84 +32,67 @@
     <h3 style="margin-top:0; color:#333; border-bottom: 2px solid #eee; padding-bottom:10px;">Nappien toiminnot</h3>
     
     <ul style="padding-left:20px; margin-bottom:0;">
-      <li style="margin-bottom:8px;"><strong>Hae:</strong> Etsi biisin nimen, soittajan, tanssilajin tai paikan perusteella.</li>
-      <li style="margin-bottom:8px;"><strong>Hae 2:</strong> Etsii kappaleita, joiden sävelistä 90% sopii pitkähuilulle.</li>
-      <li style="margin-bottom:8px;"><strong>Hae 3:</strong> Sama kuin Hae 2, mutta virheprosenttiraja säädetään liukusäätimellä.</li>
-      <li style="margin-bottom:8px;"><strong>Hae 4:</strong> Sama kuin Hae 3, mutta suodattaa pois kaikki c3 (22) korkeammat sävelet.</li>   
-      
-      <hr style="border:0; border-top:1px solid #eee; margin:10px 0;">
-      
-      <li style="margin-bottom:8px;"><strong>Arvonta 🎲:</strong> Arvo täysin satunnainen kappale.</li>
-      <li style="margin-bottom:8px;"><strong>Arvonta 2 🎲:</strong> Satunnainen kappale, joka sopii 100% huilulle, pituus vähintään 5 tahtia, max d3.</li>
-      <li style="margin-bottom:8px;"><strong>Arvonta 3 🎲:</strong> Satunnainen kappale "Salli virheitä" -säätimen mukaan, max c3.</li>
-      <li style="margin-bottom:8px;"><strong>Arvonta 4 🎲:</strong> Sama kuin arvonta 3 mutta korjaa nuotin automaattisesti 🤠2-napin mukaisesti. </li>
-      
-      <hr style="border:0; border-top:1px solid #eee; margin:10px 0;">
-      
-      <li style="margin-bottom:8px;"><strong>🤠1:</strong> Pakottaa kaikki väärät sävelet lähimpään sallittuun säveleen.</li>
-      <li style="margin-bottom:8px;"><strong>🤠2:</strong> Korjaa sävelet musikaalisemmin (huomioi sävelkulkuja).</li>
-      <li style="margin-bottom:8px;"><strong>🤠3:</strong> Sama kuin 🤠2, mutta muuttaa myös c#2 -> c2.</li>
-      
-      <hr style="border:0; border-top:1px solid #eee; margin:10px 0;">
-  
-      <li style="margin-bottom:8px;"><strong>✨ (Focus):</strong> Vaihtaa pelkistettyyn tilaan, jossa on vain nuotit ja soitin sekä 🎲4 ja ❤.</li>
-      <li style="margin-bottom:8px;"><strong>📂 / ❤️:</strong> Hallitse suosikkeja. Hakutuloksissa "Lisää kaikki" tallentaa koko listan kerralla.</li>
-      <li style="margin-bottom:8px;"><strong>TheSession-haku:</strong> Hae suoraan TheSession.orgista. Error slider vaikuttaa.</li>
+      <li style="margin-bottom:8px;"><strong>Hae 4:</strong> Etsii kappaleita vaaditulla virheprosentilla ja suodattaa pois c3 (22) korkeammat sävelet.</li>
+      <li style="margin-bottom:8px;"><strong>Arvonta 4:</strong> Satunnainen kappale, joka korjataan automaattisesti 🤠2-napin mukaisesti.</li>
+      <li style="margin-bottom:8px;"><strong>Arvonta 5:</strong> Satunnainen kappale, joka korjataan automaattisesti 🤠3-napin mukaisesti.</li>
+      <li style="margin-bottom:8px;"><strong>🤠3:</strong> Musikaalinen korjaus, joka muuttaa myös toiseksi ylimmän välin c#-sävelet puhtaaksi c:ksi.</li>
     </ul>
   </div>    
 </div>
-</div>
+
   
 <div class="search-section">
   <div class="search-bar" id="searchBar">
-    <select id="sourceFilter">
+    <select id="sourceFilter" class="advanced-only">
       <option value="Kaikki">Kaikki lähteet</option>
       <option value="Sessionsetit">Sessionsetit</option>
       <option value="Melnets">Melnets big file</option>
       <option value="Sekalaiset">Sekalaiset</option>
       <option value="Tarkistusnuotit">Tarkistusnuotit</option>
     </select>
-    <input type="text" id="searchInput" placeholder="Hae arkistosta (esim. Polska)...">
-    <button id="searchBtn">🔍 Hae</button>
-    <button id="searchTheSessionBtn" style="background: #ff9800; color: white; font-weight: bold;">🌍 Hae TheSession.org</button>
-    <button id="searchStrictBtn" style="background: #e83e8c;">Hae 2</button>
-    <button id="searchStrictLimitedBtn" style="background: #17a2b8; color: white;">Hae 3</button>
+    
+    <!-- Perusnäkymässä näkyvä hakukenttä ja Hae 4 -->
+    <input type="text" id="searchInput" placeholder="Kirjoita hakusana...">
     <button id="searchStrictC3Btn" style="background: #28a745; color: white;">Hae 4</button>
-    <button id="randomBtn" style="background: #6f42c1;">🎲 Arvonta</button>
-    <button id="randomStrictBtn">🎲 2</button>
-    <button id="randomStrictLimitedBtn" style="background: #e83e8c;">🎲 3</button>
-    <div id="arvonta-group" style="display: inline-block;">
-      <button id="randomStrictFixBtn">🎲 4</button>
-      <button id="addFavBtn">❤️</button>
-    </div>
-    <button id="toggleFocusMode">✨</button>
+
+    <!-- Arvonta 4 ja Arvonta 5 -->
+    <button id="randomStrictFixBtn" style="background: #e83e8c;">Arvonta 4</button>
+    <button id="randomStrictFixBtn5" style="background: #d63384; color: white;">Arvonta 5</button>
+
+    <!-- Perusnäkymän muut sallitut napit -->
+    <button id="fixNotesBtn3" style="background: #e83e8c;">🤠3</button>
+    <button id="addFavBtn">❤️</button>
     <button id="remFavBtn">🗑️</button>
     <button id="showFavsBtn">📂</button>
+    <button id="printBtn">🖨️</button>
+
+    <!-- Advanced-tilassa näkyvät extranapit -->
+    <button id="searchBtn" class="advanced-only">🔍 Hae</button>
+    <button id="searchTheSessionBtn" class="advanced-only" style="background: #ff9800; color: white; font-weight: bold;">🌍 Hae TheSession.org</button>
+    <button id="searchStrictBtn" class="advanced-only" style="background: #e83e8c;">Hae 2</button>
+    <button id="searchStrictLimitedBtn" class="advanced-only" style="background: #17a2b8; color: white;">Hae 3</button>
+    <button id="randomBtn" class="advanced-only" style="background: #6f42c1;">🎲 Arvonta</button>
+    <button id="randomStrictBtn" class="advanced-only">🎲 2</button>
+    <button id="randomStrictLimitedBtn" class="advanced-only" style="background: #e83e8c;">🎲 3</button>
+    <button id="toggleFocusMode" class="advanced-only">✨</button>
   </div>
   <div id="searchResults" class="search-results"></div>
 </div>
 
-<div class="controls">
+<div class="controls advanced-only">
   <div class="control-group">
     <strong>Vire: D-Pitkähuilu</strong>
   </div>
   <div class="control-group">
-    <label>Sallittu virheprosentti (Arvonta 3): <span id="errorValDisplay">0</span>%</label>
-    <input type="range" id="errorRateSlider" min="0" max="50" value="10" step="1">
+    <button id="octaveDown">Oktaavi ⬇️</button>
+    <button id="octaveUp">Oktaavi ⬆️</button>
+    <span id="octaveDisplay" class="badge">0</span>
   </div>
 
-  <div class="controls">
-    <div class="control-group">
-      <button id="octaveDown">Oktaavi ⬇️</button>
-      <button id="octaveUp">Oktaavi ⬆️</button>
-      <span id="octaveDisplay" class="badge">0</span>
-    </div>
-
-    <div class="control-group">
-      <button id="transposeDown">♭ -1</button>
-      <button id="transposeUp">♯ +1</button>
-      <span id="transposeDisplay" class="badge">0</span>
-    </div>
+  <div class="control-group">
+    <button id="transposeDown">♭ -1</button>
+    <button id="transposeUp">♯ +1</button>
+    <span id="transposeDisplay" class="badge">0</span>
   </div>
 
   <div class="control-group">
@@ -113,34 +100,37 @@
     <button id="fixBtoD">B ➔ D</button>
     <button id="fixGtoGsharp">G ➔ G#</button>
     <button id="fixNotesBtn" style="background: #007bff;">🤠1</button>
+    <button id="fixNotesBtn2" style="background: #e83e8c;">🤠2</button>
     <button id="undoBtn" style="background: #f44336; display: none;">↩️ Kumoa</button>
   </div>
-  <button id="fixNotesBtn2" style="background: #e83e8c;" class="btn">🤠2</button>
-  <button id="fixNotesBtn3" style="background: #e83e8c;" class="btn">🤠3</button>
-  <button id="undoBtn2" class="btn" style="display: none; background-color: #f44336;">Kumoa</button>
+</div>
 
-  <button id="printBtn">🖨️</button>
-
+<!-- Aina näkyvät soittimen säädin- ja tempoelementit -->
+<div class="controls" style="background: #fff; border: 1px solid #ddd;">
+  <div class="control-group">
+    <label>Sallittu virheprosentti: <span id="errorValDisplay">20</span>%</label>
+    <input type="range" id="errorRateSlider" min="0" max="50" value="20" step="1">
+  </div>
   <div class="control-group">
     <label>BPM:</label>
     <input type="range" id="tempoSlider" min="40" max="300" value="120" step="5">
     <span id="tempoDisplay" class="badge">120</span>
     <div id="abc-download"></div>
   </div>
-</div>
-
-<div class="instrument-selection" style="margin: 10px 0; font-family: sans-serif;">
+  <div class="instrument-selection">
     <label for="instrumentSelect" style="font-weight: bold; margin-right: 8px;">Valitse soitin:</label>
     <select id="instrumentSelect">
       <option value="piano" selected>MidiPiano</option>
       <option value="flute">D-pitkähuilu</option>
     </select>
+  </div>
 </div>
 
 <div id="editor-area">
   <div id="audio"></div>
 </div>
-<textarea id="abcInput">
+
+<textarea id="abcInput" class="advanced-only">
 X:1
 T:Testikappale
 M:4/4
@@ -150,7 +140,7 @@ K:C
 D^G Ac | ^cd ef |^fg ^ga | bc' ^c'd' | </textarea>
 
 <div id="warnings"></div>
-<div id="originalKeyDisplay" style="font-size: 12px; color: #666; margin-bottom: 5px; font-style: italic;"></div>
+<div id="originalKeyDisplay" style="font-size: 12px; color: #666; margin-bottom: 5px; font-style: italic;" class="advanced-only"></div>
 
 <div id="paper"></div>
 <div class="print-footer">www.overtoneflute.fi</div>
