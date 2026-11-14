@@ -1733,6 +1733,7 @@ function countErrorRate(abc, trans, oct) {
     return errCount / notes.length;
 }
 
+
 document.getElementById('searchStrictBtn').onclick = async function() {
     hideUndo();
     var query = document.getElementById('searchInput').value.toLowerCase().trim();
@@ -1810,6 +1811,67 @@ document.getElementById('searchStrictBtn').onclick = async function() {
         resultsDiv.prepend(notice);
     }
 };
+
+
+
+
+// --- 1. ASETETAAN OLETUSVIRHEPROSENTIKSI 20% ---
+var errorRateSlider = document.getElementById('errorRateSlider');
+var errorValDisplay = document.getElementById('errorValDisplay');
+if (errorRateSlider && errorValDisplay) {
+    errorRateSlider.value = 20;
+    errorValDisplay.innerText = "20";
+}
+
+// --- 2. ADVANCED / SIMPLE -NÄKYMÄN VAIHTELU ---
+var isAdvancedMode = false;
+document.body.classList.add('simple-mode'); // Oletuksena yksinkertainen näkymä
+
+var toggleAdvBtn = document.getElementById('toggleAdvancedBtn');
+if (toggleAdvBtn) {
+    toggleAdvBtn.onclick = function() {
+        isAdvancedMode = !isAdvancedMode;
+        if (isAdvancedMode) {
+            document.body.classList.remove('simple-mode');
+            toggleAdvBtn.innerHTML = "🎛️ Simple tools";
+            toggleAdvBtn.style.background = "#28a745";
+        } else {
+            document.body.classList.add('simple-mode');
+            toggleAdvBtn.innerHTML = "⚙️ Advanced tools";
+            toggleAdvBtn.style.background = "#6c757d";
+        }
+    };
+}
+
+// --- 3. ARVONTA 5: Arvonta 4 + FixNotesBtn3 automaattisesti ---
+var randomStrictFixBtn5 = document.getElementById('randomStrictFixBtn5');
+if (randomStrictFixBtn5) {
+    randomStrictFixBtn5.onclick = function() {
+        hideUndo();
+
+        // Ajetaan Hae 4 / Arvonta 4 -tyyppinen rajoitettu haku 20% virheellä ja max c3
+        if (typeof searchWithSliderAndRangeLimit === "function") {
+            searchWithSliderAndRangeLimit(22);
+        }
+
+        // Korjataan automaattisesti FixBtn3:lla (🤠3)
+        setTimeout(function() {
+            var abcInput = document.getElementById('abcInput');
+            lastOriginalAbc = abcInput.value;
+            
+            var fixBtn3 = document.getElementById('fixNotesBtn3');
+            if (fixBtn3) {
+                fixBtn3.onclick();
+            }
+            
+            if (typeof processAbc === "function") processAbc();
+        }, 70); 
+    };
+}
+
+
+
+
 
 function renderResults(res) {  
     resultsDiv.innerHTML = res.length === 0 ? "Ei tuloksia." : "";  
