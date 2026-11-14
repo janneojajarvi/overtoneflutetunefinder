@@ -1120,17 +1120,48 @@ document.getElementById('fixNotesBtn3').onclick = function() {
     });
 
     // 3. AIVAN VIIMEINEN TOIMINTO: Muutetaan toiseksi ylimmän välin c# (transponoitu step === 11) puhtaaksi c:ksi
+    // Otetaan etumerkkien luku uudelleen mukaan, jotta sävellajit ja tahtiviivat huomioidaan tarkasti.
+    keyAccidentals = {};
     var finalCleanedLines = fixedLines.map(function(line) {
         var trimmed = line.trim();
-        if (trimmed.startsWith('w:') || trimmed.startsWith('%') || /^[A-Z]:/.test(trimmed)) {
+        if (trimmed.startsWith('w:') || trimmed.startsWith('%')) return line;
+        if (/^[A-Z]:/.test(trimmed) && !trimmed.startsWith('|:')) {
+            if (trimmed.startsWith('K:')) {
+                var keyMatch = trimmed.match(/^K:\s*([A-G][b#]?)\s*(.*)/i);
+                if (keyMatch) {
+                    keyAccidentals = getKeyAccidentals(keyMatch[1], keyMatch[2].trim());
+                }
+            }
             return line;
         }
 
-        // Käydään rivin nuotit läpi ja tarkistetaan niiden lopullinen transponoitu arvo
-        return line.replace(/([\^_=]?)([A-Ga-g])([,']*)([0-9\/]*)/g, function(match, acc, note, octs, dur) {
+        barAccidentals = {};
+        return line.replace(/([|])|([\^_=]?)([A-Ga-g])([,']*)([0-9\/]*)/g, function(match, bar, acc, note, octs, dur) {
+            if (bar === '|') {
+                barAccidentals = {};
+                return match;
+            }
+
             var v = getPitchValue(note);
-            if (acc === '^') v++;
-            if (acc === '_') v--;
+            var stepInOctave = note.toUpperCase();
+
+            // Otetaan etumerkit huomioon kuten edellä
+            if (acc === '^') {
+                v++;
+                barAccidentals[stepInOctave] = 1;
+            } else if (acc === '_') {
+                v--;
+                barAccidentals[stepInOctave] = -1;
+            } else if (acc === '=') {
+                barAccidentals[stepInOctave] = 0;
+            } else {
+                if (barAccidentals.hasOwnProperty(stepInOctave)) {
+                    v += barAccidentals[stepInOctave];
+                } else if (keyAccidentals[stepInOctave]) {
+                    v += keyAccidentals[stepInOctave];
+                }
+            }
+
             for (var j = 0; j < octs.length; j++) {
                 if (octs[j] === ',') v -= 12;
                 if (octs[j] === "'") v += 12;
@@ -1138,16 +1169,18 @@ document.getElementById('fixNotesBtn3').onclick = function() {
 
             var step = v + (window.currentOctave * 12) + window.currentTranspose - 2;
 
-            // Jos nuotti on transponoinnin jälkeen tasan step 11 (toiseksi ylimmän välin c#), muutetaan se c:ksi
+            // Jos nuotti on transponoinnin jälkeen tasan step 11 (toiseksi ylimmän välin c#)
             if (step === 11) {
                 var newPitch = (10 + 2) - (window.currentOctave * 12) - window.currentTranspose; // 10 vastaa puhdasta c:tä
                 var absPitch = ((newPitch % 12) + 12) % 12;
                 var octShift = Math.floor(newPitch / 12);
-                var rawName = pitchNames[absPitch]; // Pitäisi olla C tai c
+                var rawName = pitchNames[absPitch]; // C tai c
                 
                 var finalAcc = "";
-                if (keyAccidentals['C']) {
-                    finalAcc = "="; // Palautusmerkki, jos sävellaji vaatisi ristin
+                // Jos sävellajissa tai tahdissa on voimassa korotus C:lle, vaaditaan palautusmerkki '='
+                var targetBaseLetter = rawName.toUpperCase();
+                if (keyAccidentals[targetBaseLetter] || barAccidentals[targetBaseLetter]) {
+                    finalAcc = "=";
                 }
 
                 if (octShift > 0) {
