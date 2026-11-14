@@ -1828,6 +1828,8 @@ var isAdvancedMode = false;
 document.body.classList.add('simple-mode'); // Oletuksena yksinkertainen näkymä
 
 var toggleAdvBtn = document.getElementById('toggleAdvancedBtn');
+var infoBtn = document.getElementById('infoBtn');
+
 if (toggleAdvBtn) {
     toggleAdvBtn.onclick = function() {
         isAdvancedMode = !isAdvancedMode;
@@ -1835,13 +1837,16 @@ if (toggleAdvBtn) {
             document.body.classList.remove('simple-mode');
             toggleAdvBtn.innerHTML = "🎛️ Simple tools";
             toggleAdvBtn.style.background = "#28a745";
+            if (infoBtn) infoBtn.innerHTML = "i"; // Advanced-tilassa pelkkä i-symboli
         } else {
             document.body.classList.add('simple-mode');
             toggleAdvBtn.innerHTML = "⚙️ Advanced tools";
             toggleAdvBtn.style.background = "#6c757d";
+            if (infoBtn) infoBtn.innerHTML = "Käyttöohjeet"; // Simple-tilassa sana Käyttöohjeet
         }
     };
 }
+
 
 // --- 3. ARVONTA 5: Arvonta 4 + FixNotesBtn3 automaattisesti ---
 var randomStrictFixBtn5 = document.getElementById('randomStrictFixBtn5');
