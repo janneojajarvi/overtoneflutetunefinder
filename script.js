@@ -1829,6 +1829,7 @@ document.body.classList.add('simple-mode'); // Oletuksena yksinkertainen näkym�
 
 var toggleAdvBtn = document.getElementById('toggleAdvancedBtn');
 var infoBtn = document.getElementById('infoBtn');
+var fixBtn3 = document.getElementById('fixNotesBtn3'); // Haetaan 🤠3-nappi
 
 if (toggleAdvBtn) {
     toggleAdvBtn.onclick = function() {
@@ -1837,15 +1838,18 @@ if (toggleAdvBtn) {
             document.body.classList.remove('simple-mode');
             toggleAdvBtn.innerHTML = "🎛️ Simple tools";
             toggleAdvBtn.style.background = "#28a745";
-            if (infoBtn) infoBtn.innerHTML = "i"; // Advanced-tilassa pelkkä i-symboli
+            if (infoBtn) infoBtn.innerHTML = "i"; 
+            if (fixBtn3) fixBtn3.innerHTML = "🤠3"; // Advanced-tilassa näkyy 🤠3
         } else {
             document.body.classList.add('simple-mode');
             toggleAdvBtn.innerHTML = "⚙️ Advanced tools";
             toggleAdvBtn.style.background = "#6c757d";
-            if (infoBtn) infoBtn.innerHTML = "Käyttöohjeet"; // Simple-tilassa sana Käyttöohjeet
+            if (infoBtn) infoBtn.innerHTML = "Käyttöohjeet"; 
+            if (fixBtn3) fixBtn3.innerHTML = "Korjaa sävelet"; // Simple-tilassa näkyy Korjaa sävelet
         }
     };
 }
+
 
 
 // --- ARVONTA 5: Arpoo yhden kappaleen (kuten Arvonta 4) ja tekee heti perään FixBtn3-korjauksen ---
