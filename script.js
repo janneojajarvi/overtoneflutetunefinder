@@ -121,34 +121,78 @@ var currentLang = 'fi'; // Oletuskieli suomi
 
 var translations = {
     fi: {
-        title: "Pitkähuilu TuneFinder",
+        title: "Pitkähuilu-analysaattori v14.0",
         infoBtnSimple: "Käyttöohjeet",
         advancedBtn: "⚙️ Advanced tools",
         simpleBtn: "🎛️ Simple tools",
         searchPlaceholder: "Kirjoita hakusana...",
+        searchBtn: "🔍 Hae",
+        searchSession: "🌍 Hae TheSession.org",
+        search2: "Hae 2",
+        search3: "Hae 3",
         search4: "Hae 4",
+        rand: "🎲 Arvonta",
+        rand2: "🎲 2",
+        rand3: "🎲 3",
         rand4: "Arvonta 4",
         rand5: "Arvonta 5",
         fixBtn3: "Korjaa sävelet",
+        octaveDown: "Oktaavi ⬇️",
+        octaveUp: "Oktaavi ⬆️",
+        transposeDown: "♭ -1",
+        transposeUp: "♯ +1",
+        fix1: "🤠1",
+        fix2: "🤠2",
+        undo: "↩️ Kumoa",
         errorLabel: "Sallittu virheprosentti:",
+        bpmLabel: "BPM:",
         instrumentLabel: "Valitse soitin:",
         piano: "MidiPiano",
-        flute: "D-pitkähuilu"
+        flute: "D-pitkähuilu",
+        warningsOk: "✅ Kaikki sävelet sopivat huilulle",
+        warningsErr: "⚠️ Sisältää outoja säveliä",
+        sourceAll: "Kaikki lähteet",
+        sourceSets: "Sessionsetit",
+        sourceMelnets: "Melnets big file",
+        sourceMisc: "Sekalaiset",
+        sourceCheck: "Tarkistusnuotit"
     },
     en: {
-        title: "Overtone Flute TuneFinder",
+        title: "Overtone Flute Analyzer v14.0",
         infoBtnSimple: "Instructions",
         advancedBtn: "⚙️ Advanced tools",
         simpleBtn: "🎛️ Simple tools",
         searchPlaceholder: "Type search keyword...",
+        searchBtn: "🔍 Search",
+        searchSession: "🌍 Search TheSession.org",
+        search2: "Search 2",
+        search3: "Search 3",
         search4: "Search 4",
+        rand: "🎲 Random",
+        rand2: "🎲 2",
+        rand3: "🎲 3",
         rand4: "Random 4",
         rand5: "Random 5",
         fixBtn3: "Fix notes",
+        octaveDown: "Octave ⬇️",
+        octaveUp: "Octave ⬆️",
+        transposeDown: "♭ -1",
+        transposeUp: "♯ +1",
+        fix1: "🤠1",
+        fix2: "🤠2",
+        undo: "↩️ Undo",
         errorLabel: "Allowed error rate:",
+        bpmLabel: "BPM:",
         instrumentLabel: "Select instrument:",
         piano: "MidiPiano",
-        flute: "D-overtone flute"
+        flute: "D-overtone flute",
+        warningsOk: "✅ All notes fit the flute",
+        warningsErr: "⚠️ Contains unusual notes",
+        sourceAll: "All sources",
+        sourceSets: "Session sets",
+        sourceMelnets: "Melnets big file",
+        sourceMisc: "Miscellaneous",
+        sourceCheck: "Check tunes"
     }
 };
 
@@ -156,12 +200,8 @@ var langToggleBtn = document.getElementById('langToggleBtn');
 if (langToggleBtn) {
     langToggleBtn.onclick = function() {
         currentLang = (currentLang === 'fi') ? 'en' : 'fi';
-        
-        // Vaihdetaan lipun tilalle toinen lippu tarvittaessa (tai pidetään 🇬🇧 / 🇫🇮)
         langToggleBtn.innerHTML = (currentLang === 'fi') ? '🇬🇧' : '🇫🇮';
         langToggleBtn.title = (currentLang === 'fi') ? 'Switch to English' : 'Vaihda suomeksi';
-
-        // Päivitetään tekstit käyttöliittymään
         updateLanguageTexts();
     };
 }
@@ -187,25 +227,81 @@ function updateLanguageTexts() {
         }
     }
 
-    // Hakukenttä
+    // Hakukenttä ja pudotusvalikko
     var searchInput = document.getElementById('searchInput');
     if (searchInput) searchInput.placeholder = t.searchPlaceholder;
 
-    // Päänapit
-    var btnSearch4 = document.getElementById('searchStrictC3Btn');
-    if (btnSearch4) btnSearch4.innerText = t.search4;
+    var sourceFilter = document.getElementById('sourceFilter');
+    if (sourceFilter) {
+        sourceFilter.options[0].text = t.sourceAll;
+        sourceFilter.options[1].text = t.sourceSets;
+        sourceFilter.options[2].text = t.sourceMelnets;
+        sourceFilter.options[3].text = t.sourceMisc;
+        sourceFilter.options[4].text = t.sourceCheck;
+    }
 
-    var btnRand4 = document.getElementById('randomStrictFixBtn');
-    if (btnRand4) btnRand4.innerText = t.rand4;
+    // Päänapit ja advanced-napit
+    var safeSetText = (id, text) => { var el = document.getElementById(id); if (el) el.innerText = text; };
 
-    var btnRand5 = document.getElementById('randomStrictFixBtn5');
-    if (btnRand5) btnRand5.innerText = t.rand5;
+    safeSetText('searchBtn', t.searchBtn);
+    safeSetText('searchTheSessionBtn', t.searchSession);
+    safeSetText('searchStrictBtn', t.search2);
+    safeSetText('searchStrictLimitedBtn', t.search3);
+    safeSetText('searchStrictC3Btn', t.search4);
+    safeSetText('randomBtn', t.rand);
+    safeSetText('randomStrictBtn', t.rand2);
+    safeSetText('randomStrictLimitedBtn', t.rand3);
+    safeSetText('randomStrictFixBtn', t.rand4);
+    safeSetText('randomStrictFixBtn5', t.rand5);
+    
+    if (document.body.classList.contains('simple-mode')) {
+        safeSetText('fixNotesBtn3', t.fixBtn3);
+    }
 
-    var btnFix3 = document.getElementById('fixNotesBtn3');
-    if (btnFix3 && document.body.classList.contains('simple-mode')) {
-        btnFix3.innerText = t.fixBtn3;
+    safeSetText('octaveDown', t.octaveDown);
+    safeSetText('octaveUp', t.octaveUp);
+    safeSetText('transposeDown', t.transposeDown);
+    safeSetText('transposeUp', t.transposeUp);
+    safeSetText('fixNotesBtn', t.fix1);
+    safeSetText('fixNotesBtn2', t.fix2);
+    safeSetText('undoBtn', t.undo);
+
+    // Labelit ja otsikot
+    var errorLabel = document.querySelector('label[for="errorRateSlider"]') || document.querySelector('.controls label');
+    // Etsitään virheprosentin tekstielementti varmasti
+    var labels = document.querySelectorAll('.controls label');
+    labels.forEach(lbl => {
+        if (lbl.innerText.includes("virheprosentti") || lbl.innerText.includes("error rate")) {
+            var span = lbl.querySelector('span');
+            var spanVal = span ? span.outerHTML : "";
+            lbl.innerHTML = t.errorLabel + " " + spanVal;
+        }
+        if (lbl.innerText.includes("BPM")) {
+            lbl.childNodes[0].nodeValue = t.bpmLabel + " ";
+        }
+        if (lbl.innerText.includes("soitin") || lbl.innerText.includes("instrument")) {
+            lbl.childNodes[0].nodeValue = t.instrumentLabel + " ";
+        }
+    });
+
+    // Soitinvalinnan vaihtoehdot
+    var instSelect = document.getElementById('instrumentSelect');
+    if (instSelect) {
+        instSelect.options[0].text = t.piano;
+        instSelect.options[1].text = t.flute;
+    }
+
+    // Varoitustekstit (päivitetään nykyisen tilan mukaan)
+    var warningDiv = document.getElementById('warnings');
+    if (warningDiv && warningDiv.innerHTML.trim() !== "") {
+        if (warningDiv.innerHTML.includes("sopivat")) {
+            warningDiv.innerHTML = t.warningsOk;
+        } else if (warningDiv.innerHTML.includes("outoja")) {
+            warningDiv.innerHTML = t.warningsErr;
+        }
     }
 }
+
 
 
 function getPitchValue(noteName) {  
