@@ -115,6 +115,99 @@ var tempoDisplay = document.getElementById('tempoDisplay');
 var resultsDiv = document.getElementById('searchResults');
 var baseNoteSelect = document.getElementById('baseNote');
 
+
+// --- KIELENVAINTO (SUOMI / ENGLANTI) ---
+var currentLang = 'fi'; // Oletuskieli suomi
+
+var translations = {
+    fi: {
+        title: "Pitkähuilu TuneFinder",
+        infoBtnSimple: "Käyttöohjeet",
+        advancedBtn: "⚙️ Advanced tools",
+        simpleBtn: "🎛️ Simple tools",
+        searchPlaceholder: "Kirjoita hakusana...",
+        search4: "Hae 4",
+        rand4: "Arvonta 4",
+        rand5: "Arvonta 5",
+        fixBtn3: "Korjaa sävelet",
+        errorLabel: "Sallittu virheprosentti:",
+        instrumentLabel: "Valitse soitin:",
+        piano: "MidiPiano",
+        flute: "D-pitkähuilu"
+    },
+    en: {
+        title: "Overtone Flute TuneFinder",
+        infoBtnSimple: "Instructions",
+        advancedBtn: "⚙️ Advanced tools",
+        simpleBtn: "🎛️ Simple tools",
+        searchPlaceholder: "Type search keyword...",
+        search4: "Search 4",
+        rand4: "Random 4",
+        rand5: "Random 5",
+        fixBtn3: "Fix notes",
+        errorLabel: "Allowed error rate:",
+        instrumentLabel: "Select instrument:",
+        piano: "MidiPiano",
+        flute: "D-overtone flute"
+    }
+};
+
+var langToggleBtn = document.getElementById('langToggleBtn');
+if (langToggleBtn) {
+    langToggleBtn.onclick = function() {
+        currentLang = (currentLang === 'fi') ? 'en' : 'fi';
+        
+        // Vaihdetaan lipun tilalle toinen lippu tarvittaessa (tai pidetään 🇬🇧 / 🇫🇮)
+        langToggleBtn.innerHTML = (currentLang === 'fi') ? '🇬🇧' : '🇫🇮';
+        langToggleBtn.title = (currentLang === 'fi') ? 'Switch to English' : 'Vaihda suomeksi';
+
+        // Päivitetään tekstit käyttöliittymään
+        updateLanguageTexts();
+    };
+}
+
+function updateLanguageTexts() {
+    var t = translations[currentLang];
+    
+    // Otsikko
+    var h1 = document.querySelector('.header-container h1');
+    if (h1) h1.innerText = t.title;
+
+    // Info-nappi (jos simple-tilassa)
+    if (infoBtn && document.body.classList.contains('simple-mode')) {
+        infoBtn.innerHTML = t.infoBtnSimple;
+    }
+
+    // Advanced / Simple -nappi
+    if (toggleAdvBtn) {
+        if (document.body.classList.contains('simple-mode')) {
+            toggleAdvBtn.innerHTML = t.advancedBtn;
+        } else {
+            toggleAdvBtn.innerHTML = t.simpleBtn;
+        }
+    }
+
+    // Hakukenttä
+    var searchInput = document.getElementById('searchInput');
+    if (searchInput) searchInput.placeholder = t.searchPlaceholder;
+
+    // Päänapit
+    var btnSearch4 = document.getElementById('searchStrictC3Btn');
+    if (btnSearch4) btnSearch4.innerText = t.search4;
+
+    var btnRand4 = document.getElementById('randomStrictFixBtn');
+    if (btnRand4) btnRand4.innerText = t.rand4;
+
+    var btnRand5 = document.getElementById('randomStrictFixBtn5');
+    if (btnRand5) btnRand5.innerText = t.rand5;
+
+    var btnFix3 = document.getElementById('fixNotesBtn3');
+    if (btnFix3 && document.body.classList.contains('simple-mode')) {
+        btnFix3.innerText = t.fixBtn3;
+    }
+}
+
+
 function getPitchValue(noteName) {  
     var baseMap = { 'C': 0, 'D': 2, 'E': 4, 'F': 5, 'G': 7, 'A': 9, 'B': 11 };  
     var val = baseMap[noteName.toUpperCase()] || 0;  
