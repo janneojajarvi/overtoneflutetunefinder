@@ -267,8 +267,6 @@ function updateLanguageTexts() {
     safeSetText('undoBtn', t.undo);
 
     // Labelit ja otsikot
-    var errorLabel = document.querySelector('label[for="errorRateSlider"]') || document.querySelector('.controls label');
-    // Etsitään virheprosentin tekstielementti varmasti
     var labels = document.querySelectorAll('.controls label');
     labels.forEach(lbl => {
         if (lbl.innerText.includes("virheprosentti") || lbl.innerText.includes("error rate")) {
@@ -294,13 +292,28 @@ function updateLanguageTexts() {
     // Varoitustekstit (päivitetään nykyisen tilan mukaan)
     var warningDiv = document.getElementById('warnings');
     if (warningDiv && warningDiv.innerHTML.trim() !== "") {
-        if (warningDiv.innerHTML.includes("sopivat")) {
+        if (warningDiv.innerHTML.includes("sopivat") || warningDiv.innerHTML.includes("fit")) {
             warningDiv.innerHTML = t.warningsOk;
-        } else if (warningDiv.innerHTML.includes("outoja")) {
+        } else if (warningDiv.innerHTML.includes("outoja") || warningDiv.innerHTML.includes("unusual")) {
             warningDiv.innerHTML = t.warningsErr;
         }
     }
+
+    // --- INFOTAULUN PÄIVITYS ---
+    var infoModal = document.getElementById('infoModal');
+    if (infoModal) {
+        var h3 = infoModal.querySelector('h3');
+        if (h3) h3.innerText = t.infoTitle;
+
+        var listItems = infoModal.querySelectorAll('li');
+        if (listItems && t.infoList && listItems.length === t.infoList.length) {
+            for (var i = 0; i < listItems.length; i++) {
+                listItems[i].innerHTML = t.infoList[i];
+            }
+        }
+    }
 }
+
 
 
 
