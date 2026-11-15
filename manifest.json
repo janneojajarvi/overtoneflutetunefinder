@@ -1,6 +1,6 @@
 {
-  "name": "Overtoneflutetunefinder",
-  "short_name": "Overtoneflutetunefinder",
+  "name": "overtoneflutetunefinder",
+  "short_name": "overtoneflutetunefinder",
   "start_url": "index.html",
   "display": "standalone",
   "background_color": "#ffffff",
