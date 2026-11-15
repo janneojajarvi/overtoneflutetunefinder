@@ -1,10 +1,8 @@
 [{
-  "relation": ["delegate_permission/common.handle_all_urls"],
-  "target": {
-    "namespace": "android_app",
-    "package_name": "com.janneojajarvi.overtoneflutetunefinder",
-    "sha256_cert_fingerprints": [
-      "C8:7D:83:81:A4:07:D3:96:34:AA:E3:24:D1:1E:F7:5E:63:34:54:47:97:AD:5A:D5:CD:B2:BC:3D:55:BD:90:B9"
-    ]
-  }
-}]
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "com.janneojajarvi.overtoneflutetunefinder",
+        "sha256_cert_fingerprints": ["8A:44:AF:37:3E:22:91:C4:C7:3F:97:C5:1F:E4:4A:49:32:F0:07:9B:93:8B:A5:A4:FF:73:AB:FE:D4:8A:06:5D"]
+      }
+    }]
