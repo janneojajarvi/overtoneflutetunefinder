@@ -121,7 +121,41 @@ var currentLang = 'fi'; // Oletuskieli suomi
 
 var translations = {
     fi: {
-        // ... (muut aiemmat suomenkieliset tekstit) ...
+        title: "Pitkähuilu-analysaattori v14.0",
+        infoBtnSimple: "Käyttöohjeet",
+        advancedBtn: "⚙️ Advanced tools",
+        simpleBtn: "🎛️ Simple tools",
+        searchPlaceholder: "Kirjoita hakusana...",
+        searchBtn: "🔍 Hae",
+        searchSession: "🌍 Hae TheSession.org",
+        search2: "Hae 2",
+        search3: "Hae 3",
+        search4: "Hae 4",
+        rand: "🎲 Arvonta",
+        rand2: "🎲 2",
+        rand3: "🎲 3",
+        rand4: "Arvonta 4",
+        rand5: "Arvonta 5",
+        fixBtn3: "Korjaa sävelet",
+        octaveDown: "Oktaavi ⬇️",
+        octaveUp: "Oktaavi ⬆️",
+        transposeDown: "♭ -1",
+        transposeUp: "♯ +1",
+        fix1: "🤠1",
+        fix2: "🤠2",
+        undo: "↩️ Kumoa",
+        errorLabel: "Sallittu virheprosentti:",
+        bpmLabel: "BPM:",
+        instrumentLabel: "Valitse soitin:",
+        piano: "MidiPiano",
+        flute: "D-pitkähuilu",
+        warningsOk: "✅ Kaikki sävelet sopivat huilulle",
+        warningsErr: "⚠️ Sisältää outoja säveliä",
+        sourceAll: "Kaikki lähteet",
+        sourceSets: "Sessionsetit",
+        sourceMelnets: "Melnets big file",
+        sourceMisc: "Sekalaiset",
+        sourceCheck: "Tarkistusnuotit",
         tuningText: "Vire: D-Pitkähuilu",
         origKeyDefault: "Alkuperäinen sävellaji: D-pitkähuilu (ei transponointia)",
         origKeyPrefix: "Alkuperäinen sävellaji: vaatisi ilman transponointia ",
@@ -147,7 +181,41 @@ var translations = {
         ]
     },
     en: {
-        // ... (muut aiemmat englanninkieliset tekstit) ...
+        title: "Overtone Flute Tune Finder",
+        infoBtnSimple: "Instructions",
+        advancedBtn: "⚙️ Advanced tools",
+        simpleBtn: "🎛️ Simple tools",
+        searchPlaceholder: "Type search keyword...",
+        searchBtn: "🔍 Search",
+        searchSession: "🌍 Search TheSession.org",
+        search2: "Search 2",
+        search3: "Search 3",
+        search4: "Search 4",
+        rand: "🎲 Random",
+        rand2: "🎲 2",
+        rand3: "🎲 3",
+        rand4: "Random 4",
+        rand5: "Random 5",
+        fixBtn3: "Fix notes",
+        octaveDown: "Octave ⬇️",
+        octaveUp: "Octave ⬆️",
+        transposeDown: "♭ -1",
+        transposeUp: "♯ +1",
+        fix1: "🤠1",
+        fix2: "🤠2",
+        undo: "↩️ Undo",
+        errorLabel: "Allowed error rate:",
+        bpmLabel: "BPM:",
+        instrumentLabel: "Select instrument:",
+        piano: "MidiPiano",
+        flute: "D-overtone flute",
+        warningsOk: "✅ All notes fit the flute",
+        warningsErr: "⚠️ Contains unusual notes",
+        sourceAll: "All sources",
+        sourceSets: "Session sets",
+        sourceMelnets: "Melnets big file",
+        sourceMisc: "Miscellaneous",
+        sourceCheck: "Check tunes",
         tuningText: "Tuning: D Overtone Flute",
         origKeyDefault: "Original key: D overtone flute (no transposition)",
         origKeyPrefix: "Original key: would require ",
@@ -173,6 +241,7 @@ var translations = {
         ]
     }
 };
+
 
 
 var langToggleBtn = document.getElementById('langToggleBtn');
@@ -471,7 +540,7 @@ function processAbc() {
     var keyAccidentals = {}; 
     var barAccidentals = {}; 
       
-        var lines = raw.split('\n');  
+    var lines = raw.split('\n');  
     for (var i = 0; i < lines.length; i++) {  
         // POISTETAAN RIVIN LOPUN KENOVIIVA ( \ ) ja ylimääräiset välilyönnit automaattisesti
         var line = lines[i].replace(/\\\s*$/, '').trim();  
@@ -499,7 +568,6 @@ function processAbc() {
             }
             continue;
         }
-
 
         var wLine = "w:";  
         var foundNotes = false;  
@@ -559,6 +627,9 @@ function processAbc() {
         });
     }
 
+    // --- KÄYTETÄÄN TÄSSÄ KÄÄNNÖSSANAKIRJAA ---
+    var t = (typeof translations !== 'undefined' && translations[window.currentLang]) ? translations[window.currentLang] : translations.fi;
+
     var originalKeyDisplay = document.getElementById('originalKeyDisplay');
     if (originalKeyDisplay) {
         var harpKey = getOriginalHarpKey();
@@ -566,9 +637,9 @@ function processAbc() {
         
         if (trans !== 0) {
             var transStr = trans > 0 ? "+" + trans : trans;
-            originalKeyDisplay.innerText = `Alkuperäinen sävellaji: vaatisi ilman transponointia ${harpKey}-pitkähuilun (transponoitu ${transStr} puoliaskelta)`;
+            originalKeyDisplay.innerText = t.origKeyPrefix + harpKey + t.origKeySuffix + transStr + t.origKeySuffixEnd;
         } else {
-            originalKeyDisplay.innerText = "Alkuperäinen sävellaji: D-pitkähuilu (ei transponointia)";
+            originalKeyDisplay.innerText = t.origKeyDefault;
         }
     }
 
@@ -636,10 +707,11 @@ function processAbc() {
         }
     }
     if (warningDiv) {
-        warningDiv.innerHTML = hasErrors ? "⚠️ Sisältää outoja säveliä" : "✅ Kaikki sävelet sopivat huilulle";
+        warningDiv.innerHTML = hasErrors ? t.warningsErr : t.warningsOk;
     }
     updateAbcDownload(finalAbc);
 }
+
 
 document.getElementById('octaveUp').onclick = function() { window.currentOctave++; processAbc(); };  
 document.getElementById('octaveDown').onclick = function() { window.currentOctave--; processAbc(); };  
@@ -2041,19 +2113,17 @@ if (toggleAdvBtn) {
         isAdvancedMode = !isAdvancedMode;
         if (isAdvancedMode) {
             document.body.classList.remove('simple-mode');
-            toggleAdvBtn.innerHTML = "🎛️ Simple tools";
             toggleAdvBtn.style.background = "#28a745";
             if (infoBtn) infoBtn.innerHTML = "i"; 
-            if (fixBtn3) fixBtn3.innerHTML = "🤠3"; // Advanced-tilassa näkyy 🤠3
+            if (fixBtn3) fixBtn3.innerHTML = "🤠3";
         } else {
             document.body.classList.add('simple-mode');
-            toggleAdvBtn.innerHTML = "⚙️ Advanced tools";
             toggleAdvBtn.style.background = "#6c757d";
-            if (infoBtn) infoBtn.innerHTML = "Käyttöohjeet"; 
-            if (fixBtn3) fixBtn3.innerHTML = "Korjaa sävelet"; // Simple-tilassa näkyy Korjaa sävelet
         }
+        updateLanguageTexts(); // Päivittää nappien tekstit aktiivisen kielen mukaan
     };
 }
+
 
 
 
