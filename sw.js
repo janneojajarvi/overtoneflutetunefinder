@@ -20,9 +20,6 @@ const ASSETS = [
   './tarkistusnuotit9.js',
   
   // Folkwiki ja muut kokoelmat
-  './folkwikiSet1.js',
-  './folkwikiSet2.js',
-  './folkwikiSet3.js',
   './extrasetti5.js',
   
   // SessionSet-sarja (1-18)
