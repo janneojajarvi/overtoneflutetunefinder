@@ -1998,61 +1998,7 @@ function updateAbcDownload(abc) {
         </a>`;
 }
 
-let exitBtn = document.getElementById('exitFocusMode');
-if (!exitBtn) {
-    exitBtn = document.createElement('button');
-    exitBtn.id = "exitFocusMode";
-    exitBtn.innerHTML = "🔙 Lopeta pelkistetty tila";
-    document.body.appendChild(exitBtn);
-}
 
-const toggleBtn = document.getElementById('toggleFocusMode');
-if (toggleBtn) {
-    toggleBtn.onclick = function() {
-        document.body.classList.add('focus-mode');
-        setupFocusLayout(true);
-    };
-}
-
-exitBtn.onclick = function() {
-    document.body.classList.remove('focus-mode');
-    setupFocusLayout(false);
-};
-
-function setupFocusLayout(enable) {
-    const paper = document.getElementById('paper');
-    const soitin = document.getElementById('audio');
-    const arvontaGroup = document.getElementById('arvonta-group'); 
-    const searchBar = document.querySelector('.search-bar');
-    const toggleBtn = document.getElementById('toggleFocusMode');
-    const editorArea = document.getElementById('editor-area');
-
-    if (enable) {
-        document.body.classList.add('focus-mode');
-        let container = document.getElementById('focus-container');
-        if (!container) {
-            container = document.createElement('div');
-            container.id = 'focus-container';
-            paper.parentNode.insertBefore(container, paper);
-        }
-        if (arvontaGroup) container.appendChild(arvontaGroup);
-        if (soitin) container.appendChild(soitin);
-    } else {
-        document.body.classList.remove('focus-mode');
-        if (searchBar && arvontaGroup) {
-            searchBar.insertBefore(arvontaGroup, toggleBtn);
-        }
-        if (editorArea && soitin) {
-            editorArea.insertBefore(soitin, editorArea.firstChild);
-        }
-        const container = document.getElementById('focus-container');
-        if (container) container.remove();
-    }
-
-    setTimeout(() => {
-        if (typeof processAbc === "function") processAbc();
-    }, 100);
-}
 
 var searchTheSessionBtn = document.getElementById('searchTheSessionBtn');
 if (searchTheSessionBtn) {
