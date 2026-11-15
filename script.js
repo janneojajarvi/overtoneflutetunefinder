@@ -121,80 +121,59 @@ var currentLang = 'fi'; // Oletuskieli suomi
 
 var translations = {
     fi: {
-        title: "Pitkähuilu-analysaattori v14.0",
-        infoBtnSimple: "Käyttöohjeet",
-        advancedBtn: "⚙️ Advanced tools",
-        simpleBtn: "🎛️ Simple tools",
-        searchPlaceholder: "Kirjoita hakusana...",
-        searchBtn: "🔍 Hae",
-        searchSession: "🌍 Hae TheSession.org",
-        search2: "Hae 2",
-        search3: "Hae 3",
-        search4: "Hae 4",
-        rand: "🎲 Arvonta",
-        rand2: "🎲 2",
-        rand3: "🎲 3",
-        rand4: "Arvonta 4",
-        rand5: "Arvonta 5",
-        fixBtn3: "Korjaa sävelet",
-        octaveDown: "Oktaavi ⬇️",
-        octaveUp: "Oktaavi ⬆️",
-        transposeDown: "♭ -1",
-        transposeUp: "♯ +1",
-        fix1: "🤠1",
-        fix2: "🤠2",
-        undo: "↩️ Kumoa",
-        errorLabel: "Sallittu virheprosentti:",
-        bpmLabel: "BPM:",
-        instrumentLabel: "Valitse soitin:",
-        piano: "MidiPiano",
-        flute: "D-pitkähuilu",
-        warningsOk: "✅ Kaikki sävelet sopivat huilulle",
-        warningsErr: "⚠️ Sisältää outoja säveliä",
-        sourceAll: "Kaikki lähteet",
-        sourceSets: "Sessionsetit",
-        sourceMelnets: "Melnets big file",
-        sourceMisc: "Sekalaiset",
-        sourceCheck: "Tarkistusnuotit"
+        // ... (muut aiemmat suomenkieliset tekstit) ...
+        tuningText: "Vire: D-Pitkähuilu",
+        origKeyDefault: "Alkuperäinen sävellaji: D-pitkähuilu (ei transponointia)",
+        origKeyPrefix: "Alkuperäinen sävellaji: vaatisi ilman transponointia ",
+        origKeySuffix: "-pitkähuilun (transponoitu ",
+        origKeySuffixEnd: " puoliaskelta)",
+        
+        infoTitle: "Nappien toiminnot",
+        infoItems: [
+            { class: "advanced-info", html: "<strong>Hae:</strong> Etsi biisin nimen, soittajan, tanssilajin tai paikan perusteella." },
+            { class: "advanced-info", html: "<strong>Hae 2:</strong> Etsii kappaleita, joiden sävelistä 90% sopii pitkähuilulle." },
+            { class: "advanced-info", html: "<strong>Hae 3:</strong> Sama kuin Hae 2, mutta virheprosenttiraja säädetään liukusäätimellä." },
+            { class: "", html: "<strong>Hae 4:</strong> Etsii kappaleita vaaditulla virheprosentilla ja suodattaa pois c3-säveltä korkeammat sävelet." },
+            { class: "advanced-info", html: "<strong>Arvonta 🎲:</strong> Arvo täysin satunnainen kappale." },
+            { class: "advanced-info", html: "<strong>Arvonta 2 🎲:</strong> Satunnainen kappale, joka sopii 100% huilulle, pituus vähintään 5 tahtia, korkeus max d3." },
+            { class: "advanced-info", html: "<strong>Arvonta 3 🎲:</strong> Satunnainen kappale \"Salli virheitä\" -säätimen mukaan, korkeus max c3." },
+            { class: "", html: "<strong>Arvonta 4:</strong> Satunnainen kappale, joka korjataan automaattisesti D-pitkähuilulla soitettavaksi." },
+            { class: "", html: "<strong>Arvonta 5:</strong> Satunnainen kappale, joka korjataan automaattisesti D-pitkähuilulla soitettavaksi niin, että c#2 sävelet on palautettu c2:ksi." },
+            { class: "advanced-info", html: "<strong>🤠1:</strong> Pakottaa kaikki D-pitkähuilulle mahdottomat sävelet lähimpään mahdolliseen säveleen." },
+            { class: "advanced-info", html: "<strong>🤠2:</strong> Pakottaa kaikki D-pitkähuilulle mahdottomat sävelet lähimpään mahdolliseen säveleen huomioiden sävelkulkuja." },
+            { class: "", html: "<strong>Korjaa sävelet / 🤠3:</strong> Sama kuin 🤠2, mutta muuttaa myös c#2-sävelet puhtaaksi c:ksi." },
+            { class: "", html: "<strong>📂 / ❤️:</strong> Hallitse suosikkeja. Hakutuloksissa \"Lisää kaikki\" tallentaa koko listan kerralla." },
+            { class: "advanced-info", html: "<strong>TheSession-haku:</strong> Hae suoraan TheSession.orgista." }
+        ]
     },
     en: {
-        title: "Overtone Flute Analyzer v14.0",
-        infoBtnSimple: "Instructions",
-        advancedBtn: "⚙️ Advanced tools",
-        simpleBtn: "🎛️ Simple tools",
-        searchPlaceholder: "Type search keyword...",
-        searchBtn: "🔍 Search",
-        searchSession: "🌍 Search TheSession.org",
-        search2: "Search 2",
-        search3: "Search 3",
-        search4: "Search 4",
-        rand: "🎲 Random",
-        rand2: "🎲 2",
-        rand3: "🎲 3",
-        rand4: "Random 4",
-        rand5: "Random 5",
-        fixBtn3: "Fix notes",
-        octaveDown: "Octave ⬇️",
-        octaveUp: "Octave ⬆️",
-        transposeDown: "♭ -1",
-        transposeUp: "♯ +1",
-        fix1: "🤠1",
-        fix2: "🤠2",
-        undo: "↩️ Undo",
-        errorLabel: "Allowed error rate:",
-        bpmLabel: "BPM:",
-        instrumentLabel: "Select instrument:",
-        piano: "MidiPiano",
-        flute: "D-overtone flute",
-        warningsOk: "✅ All notes fit the flute",
-        warningsErr: "⚠️ Contains unusual notes",
-        sourceAll: "All sources",
-        sourceSets: "Session sets",
-        sourceMelnets: "Melnets big file",
-        sourceMisc: "Miscellaneous",
-        sourceCheck: "Check tunes"
+        // ... (muut aiemmat englanninkieliset tekstit) ...
+        tuningText: "Tuning: D Overtone Flute",
+        origKeyDefault: "Original key: D overtone flute (no transposition)",
+        origKeyPrefix: "Original key: would require ",
+        origKeySuffix: "-overtone flute without transposition (transposed ",
+        origKeySuffixEnd: " semitones)",
+
+        infoTitle: "Button Functions",
+        infoItems: [
+            { class: "advanced-info", html: "<strong>Search:</strong> Search by tune name, player, dance type, or origin." },
+            { class: "advanced-info", html: "<strong>Search 2:</strong> Finds tunes where 90% of notes fit the overtone flute." },
+            { class: "advanced-info", html: "<strong>Search 3:</strong> Same as Search 2, but the error rate limit is set by the slider." },
+            { class: "", html: "<strong>Search 4:</strong> Finds tunes with the required error rate and filters out notes higher than c3." },
+            { class: "advanced-info", html: "<strong>Random 🎲:</strong> Pick a completely random tune." },
+            { class: "advanced-info", html: "<strong>Random 2 🎲:</strong> Random tune fitting the flute 100%, min 5 measures, max height d3." },
+            { class: "advanced-info", html: "<strong>Random 3 🎲:</strong> Random tune based on the \"allow errors\" slider, max height c3." },
+            { class: "", html: "<strong>Random 4:</strong> Random tune automatically fixed for D overtone flute." },
+            { class: "", html: "<strong>Random 5:</strong> Random tune automatically fixed for D overtone flute with c#2 notes restored to c2." },
+            { class: "advanced-info", html: "<strong>🤠1:</strong> Forces all impossible notes to the nearest available note." },
+            { class: "advanced-info", html: "<strong>🤠2:</strong> Forces all impossible notes to the nearest available note taking melody direction into account." },
+            { class: "", html: "<strong>Fix notes / 🤠3:</strong> Same as 🤠2, but also converts c#2 notes to clean c." },
+            { class: "", html: "<strong>📂 / ❤️:</strong> Manage favorites. In search results, \"Add all\" saves the entire list at once." },
+            { class: "advanced-info", html: "<strong>TheSession Search:</strong> Search directly from TheSession.org." }
+        ]
     }
 };
+
 
 var langToggleBtn = document.getElementById('langToggleBtn');
 if (langToggleBtn) {
@@ -298,6 +277,45 @@ function updateLanguageTexts() {
             warningDiv.innerHTML = t.warningsErr;
         }
     }
+    
+        // --- VIREEN JA ALKUPERÄISEN SÄVELLAJIN PÄIVITYS ---
+    var tuningGroup = document.querySelector('.controls strong');
+    if (tuningGroup && tuningGroup.innerText.includes("Vire") || tuningGroup.innerText.includes("Tuning")) {
+        tuningGroup.innerText = t.tuningText;
+    }
+
+    // Päivitetään alkuperäisen sävellajin teksti dynamiikan mukaan
+    var originalKeyDisplay = document.getElementById('originalKeyDisplay');
+    if (originalKeyDisplay && originalKeyDisplay.innerText.trim() !== "") {
+        var trans = window.currentTranspose || 0;
+        if (trans !== 0) {
+            var transStr = trans > 0 ? "+" + trans : trans;
+            var harpKey = getOriginalHarpKey();
+            originalKeyDisplay.innerText = t.origKeyPrefix + harpKey + t.origKeySuffix + transStr + t.origKeySuffixEnd;
+        } else {
+            originalKeyDisplay.innerText = t.origKeyDefault;
+        }
+    }
+
+    // --- INFOTAULUN DYNAAMINEN LUOMINEN ---
+    var infoModal = document.getElementById('infoModal');
+    if (infoModal) {
+        var h3 = infoModal.querySelector('h3');
+        if (h3) h3.innerText = t.infoTitle;
+
+        var ul = infoModal.querySelector('ul');
+        if (ul && t.infoItems) {
+            ul.innerHTML = ""; // Tyhjennetään vanhat listakohteet
+            t.infoItems.forEach(item => {
+                var li = document.createElement('li');
+                li.style.marginBottom = "8px";
+                if (item.class) li.className = item.class;
+                li.innerHTML = item.html;
+                ul.appendChild(li);
+            });
+        }
+    }
+
 
     // --- INFOTAULUN PÄIVITYS ---
     var infoModal = document.getElementById('infoModal');
