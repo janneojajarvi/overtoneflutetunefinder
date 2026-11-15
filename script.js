@@ -277,14 +277,13 @@ function updateLanguageTexts() {
             warningDiv.innerHTML = t.warningsErr;
         }
     }
-    
-        // --- VIREEN JA ALKUPERÄISEN SÄVELLAJIN PÄIVITYS ---
+
+    // --- VIREEN JA ALKUPERÄISEN SÄVELLAJIN PÄIVITYS ---
     var tuningGroup = document.querySelector('.controls strong');
-    if (tuningGroup && tuningGroup.innerText.includes("Vire") || tuningGroup.innerText.includes("Tuning")) {
+    if (tuningGroup && (tuningGroup.innerText.includes("Vire") || tuningGroup.innerText.includes("Tuning"))) {
         tuningGroup.innerText = t.tuningText;
     }
 
-    // Päivitetään alkuperäisen sävellajin teksti dynamiikan mukaan
     var originalKeyDisplay = document.getElementById('originalKeyDisplay');
     if (originalKeyDisplay && originalKeyDisplay.innerText.trim() !== "") {
         var trans = window.currentTranspose || 0;
@@ -315,22 +314,8 @@ function updateLanguageTexts() {
             });
         }
     }
-
-
-    // --- INFOTAULUN PÄIVITYS ---
-    var infoModal = document.getElementById('infoModal');
-    if (infoModal) {
-        var h3 = infoModal.querySelector('h3');
-        if (h3) h3.innerText = t.infoTitle;
-
-        var listItems = infoModal.querySelectorAll('li');
-        if (listItems && t.infoList && listItems.length === t.infoList.length) {
-            for (var i = 0; i < listItems.length; i++) {
-                listItems[i].innerHTML = t.infoList[i];
-            }
-        }
-    }
 }
+
 
 
 
