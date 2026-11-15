@@ -229,3 +229,7 @@ body.simple-mode #infoBtn {
     font-style: normal;
 }
 
+/* Piilotetaan advanced-ohjeet simple-näkymässä */
+body.simple-mode .advanced-info {
+    display: none !important;
+}
