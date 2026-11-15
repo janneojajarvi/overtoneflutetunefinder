@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pitkistool-v9';
+const CACHE_NAME = 'overtoneflutetunefinder-v1';
 const ASSETS = [
   './',
   './index.html',
@@ -19,23 +19,10 @@ const ASSETS = [
   './korjaustsekki3.js',
   './tarkistusnuotit9.js',
   
-  // Esävelmät-sarja
-  './esavelmat_hs1.js',
-  './esavelmat_kansantanssit.js',
-  './esavelmat_kjs.js',
-  './esavelmat_ls1.js',
-  './esavelmat_ls2.js',
-  './esavelmat_ls3.js',
-  './esavelmat_ls4.js',
-  './esavelmat_rs1.js',
-  './esavelmat_rs2.js',
-  
   // Folkwiki ja muut kokoelmat
   './folkwikiSet1.js',
   './folkwikiSet2.js',
   './folkwikiSet3.js',
-  './fsfolkdiktning01.js',
-  './fsfolkdiktning02.js',
   './extrasetti5.js',
   
   // SessionSet-sarja (1-18)
