@@ -3,6 +3,6 @@
       "target": {
         "namespace": "android_app",
         "package_name": "com.janneojajarvi.overtoneflutetunefinder",
-        "sha256_cert_fingerprints": ["A0:DF:3D:8A:29:0A:E5:69:7B:FB:D6:F9:B5:16:2E:29:E6:51:DE:E6:4A:03:8D:E6:BD:8E:F5:80:D1:23:22:74"]
+        "sha256_cert_fingerprints": ["17:E9:65:F4:05:EF:18:F9:7C:EA:13:EC:EB:5F:88:95:0C:A8:36:C7:51:E5:E9:70:BC:99:80:55:F4:B1:5B:29"]
       }
     }]
