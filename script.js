@@ -121,7 +121,7 @@ var currentLang = 'fi'; // Oletuskieli suomi
 
 var translations = {
     fi: {
-        title: "Pitkähuilu-analysaattori v14.0",
+        title: "Pitkähuilu TuneFinder",
         infoBtnSimple: "Käyttöohjeet",
         advancedBtn: "⚙️ Advanced tools",
         simpleBtn: "🎛️ Simple tools",
