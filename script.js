@@ -57,6 +57,7 @@ async function loadGistData() {
 		{ type: "Sekalaiset", url: "folkwikiSet3.js" },
 		{ type: "Sekalaiset", url: "folkwikiExtra.js" },
         { type: "Sekalaiset", url: "FinnishTunes2.js" },
+		 { type: "Sekalaiset", url: "alkubiisi.js" },
         { type: "Sekalaiset", url: "swedish2.js" },
         { type: "Sekalaiset", url: "norway1.js" },
         { type: "Sekalaiset", url: "dansk1.js" },
