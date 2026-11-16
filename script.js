@@ -2480,6 +2480,17 @@ if ('serviceWorker' in navigator) {
 
 };
 
+// Päivitetään virheprosentin lukema lennosta liukusäädintä siirrettäessä
+var errorRateSlider = document.getElementById('errorRateSlider');
+var errorValDisplay = document.getElementById('errorValDisplay');
+
+if (errorRateSlider && errorValDisplay) {
+    errorRateSlider.oninput = function() {
+        errorValDisplay.innerText = this.value;
+    };
+}
+
+
 document.addEventListener('click', function() {
     if (synth && synth.audioContext && synth.audioContext.state === 'suspended') {
         synth.audioContext.resume().then(function() {
