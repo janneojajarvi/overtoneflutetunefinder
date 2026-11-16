@@ -1,4 +1,4 @@
-const CACHE_NAME = 'overtoneflutetunefinder-v1';
+const CACHE_NAME = 'overtoneflutetunefinder-v2';
 const ASSETS = [
   './',
   './index.html',
@@ -17,10 +17,16 @@ const ASSETS = [
   './norway1.js',
   './swedish2.js',
   './korjaustsekki3.js',
+
   './tarkistusnuotit9.js',
   
   // Folkwiki ja muut kokoelmat
   './extrasetti5.js',
+'./folkwikiSet1.js',
+'./folkwikiSet2.js',
+ './folkwikiSet3.js',
+  
+  
   
   // SessionSet-sarja (1-18)
   './sessionSet01.js',
