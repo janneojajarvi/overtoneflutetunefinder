@@ -17,6 +17,7 @@ const ASSETS = [
   './norway1.js',
   './swedish2.js',
   './korjaustsekki3.js',
+  './alkubiisi.js',
 
   './tarkistusnuotit9.js',
   
