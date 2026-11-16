@@ -940,6 +940,16 @@ document.getElementById('showFavsBtn').onclick = function() {
 
 tempoSlider.oninput = processAbc;  
 abcInput.oninput = processAbc;  
+
+// Päivitetään virheprosentin lukema lennosta liukusäädintä siirrettäessä
+var errorRateSlider = document.getElementById('errorRateSlider');
+var errorValDisplay = document.getElementById('errorValDisplay');
+
+if (errorRateSlider && errorValDisplay) {
+    errorRateSlider.oninput = function() {
+        errorValDisplay.innerText = this.value;
+    };
+}
   
 window.undoFix = function() {
     if (lastOriginalAbc) {
@@ -2480,15 +2490,7 @@ if ('serviceWorker' in navigator) {
 
 };
 
-// Päivitetään virheprosentin lukema lennosta liukusäädintä siirrettäessä
-var errorRateSlider = document.getElementById('errorRateSlider');
-var errorValDisplay = document.getElementById('errorValDisplay');
 
-if (errorRateSlider && errorValDisplay) {
-    errorRateSlider.oninput = function() {
-        errorValDisplay.innerText = this.value;
-    };
-}
 
 
 document.addEventListener('click', function() {
