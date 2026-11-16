@@ -4,10 +4,6 @@ var FinnishTunes2 = [
         "abc": '%%abc-charset utf-8\\n\\nX: 0\nT: Lantti\nO: trad Finland\nZ: John Chambers <jc@trillian.mit.edu>\nP: F2 Bb2 ... (4-6 times)\nK:\n% - - - - - - - - - - - - - - - - - - - - - - - - -\nP: Lantti   [F]\nM: 2/4\nL: 1/16\nK: F\n|: A2AA A2B2 | c2c2 c3c | c2a2 g3c | c2g2 f3B \\\n|  A2AA A2B2 | c2c2 c3c | c2a2 g3e | f2f2 f4 :|\n|: a4 f4 | c2c2 c4 | a4 f4 | c2c2 c4 \\\n| b2b2 b4 | a2a2 a4 | g2g2 gbge | g2f2 f4 :|\n% - - - - - - - - - - - - - - - - - - - - - - - - -\nP: Lantti   [Bb]\nZ: John Chambers <jc@trillian.mit.edu>\nM: 2/4\nL: 1/16\nK: Bb\n|: D2DD D2E2 | F2F2 F3F | F2d2 c3F | F2c2 B3E \\\n|  D2DD D2E2 | F2F2 F3F | F2d2 c3A | B2B2 B4 :|\n|: d4 B4 | F2F2 F4 | d4 B4 | F2F2 F4 \\\n| e2e2 e4 | d2d2 d4 | c2c2 cecA | c2B2 B4 :|'
     },
     {
-    name: "lanttitesti",
-    abc: "X:1\nT:Lanttitesti\nT:D pitkähuilu\nT:Trad. Suomi\nZ:© Janne Ojajärvi\nL:1/8\nM:2/4\nI:linebreak $\nK:Dmin\nV:1 treble nm=\"Violin\"\nV:1\n Ad/d/ dd | dd/c/ AA | cc cc/d/ | A2 A2 ::$ af ed | af ed | ad ad | af ed | ee/a/ fe | d2 d2 :| %10"
-    },
-    {
         "name": 'Kahdeksan miehen engeliska',
         "abc": '%%abc-charset utf-8\\n\\nX: 1\nT: Kahdeksan miehen engeliska\nT: ÅAttaman engelska\nM: 2/4\nL: 1/16\nK: D\nP: Polka (3x)\n|: b3a g2f2 | A2ce cAce | a3g f2e2 |1,3 d2fa fdfa :|2,4 d2d2 d4 :|\n|: D2FA FDFA | G2Bd BGBd | A2ce cAce |1,3 fedc dcBA :|2,4 d2d2 d4 :|\nP: Polska (2x)\nM: 3/4\nL: 1/16\n|: A4 | DCDE FEDE F2D2 | FEFG AGFG A2F2 | A2FA d2Ad f2df | fedc d4 :|\n|: A4 | d2fd Acec Acec | Adfd Acec Acec | ABcd efge fafd | egec d4 :|'
     },
