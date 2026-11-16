@@ -710,6 +710,11 @@ function processAbc() {
         warningDiv.innerHTML = hasErrors ? t.warningsErr : t.warningsOk;
     }
     updateAbcDownload(finalAbc);
+    
+    // Päivitetään kieli heti perään, jotta napit ja tekstit pysyvät oikealla kielellä
+    if (typeof updateLanguageTexts === "function") {
+        updateLanguageTexts();
+    }
 }
 
 
