@@ -25,6 +25,8 @@ const ASSETS = [
 './folkwikiSet1.js',
 './folkwikiSet2.js',
  './folkwikiSet3.js',
+'./folkwikiExtra.js',
+  
   
   
   
