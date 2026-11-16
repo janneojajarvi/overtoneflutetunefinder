@@ -4,6 +4,10 @@ var own = [
     abc: "X:1\nT: Easter Snow\nC: Trad\nO: Ireland\nS: Eamonn Cotter (Traditional Irish Music From County Clare)\nM: 9/8\nL: 1/8\nN: Slow air\nQ: 3/8=40\nK:G\n|: {f}g2f{d} e3 d2e/f/ | g2(3e/d/B/ d2e G3 | {A}G2A/B/ c2 B~B2c | d2B/G/ A2B {F}GGG :|\nd2e/f/ g2a b2a | g3 g2a b2a | g2e g3  g2a | b2a g2e g3 | g2e/B/ d2e G3 |\n{d}g2f/d/ e3 d2e/f/ | g2e/B/ d2e G3 | G2A/B/ c2B/A/ B2c | d2B/G/ A2B {F}~G3 ||"
   },
   {
+    name: "owntest",
+    abc: "X:1\nT:owntest\nT:D pitkähuilu\nT:Trad. Suomi\nZ:© Janne Ojajärvi\nL:1/8\nM:2/4\nI:linebreak $\nK:Dmin\nV:1 treble nm=\"Violin\"\nV:1\n Ad/d/ dd | dd/c/ AA | cc cc/d/ | A2 A2 ::$ af ed | af ed | ad ad | af ed | ee/a/ fe | d2 d2 :| %10"
+  },
+  {
     name: "A Bruxa",
     abc: "X:1\nT:A Bruxa\nR:waltz\nM:3/4\nL:1/8\nK:Amin\nec BA Bc | e2c2 Ad | cB F2c2 | B6 |\nec BA Bc | e2c2 Ad | cB F2B2 | A6 :|\nAB c2d2 | e6 | fe d2g2 | e6 |\nAB c2d2 | e6 | fe d2g2 | e6 |\n|:~g2 ed ef | e2c2A2 |ed cB cd | c2A2F2 |\ndc BA Bc | B2F2E2 | FE F2^G2 |1A2c2e2:|2A6||X: 1\nT: Bmin\nK:Bmin\nfd cB cd | f2d2 Be | dc G2d2 | c6 |\nfd cB cd | f2d2 Be | dc G2c2 | B6 :|\nBc d2e2 | f6 | gf e2a2 | f6 |\nBc d2e2 | f6 | gf e2a2 | f6 |\n|:~a2 fe fg | f2d2B2 |fe dc de | d2B2G2 |\ned cB cd | c2G2F2 | GF G2^A2 |1B2d2f2:|2B6||"
   },
