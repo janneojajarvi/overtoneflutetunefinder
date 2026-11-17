@@ -315,12 +315,12 @@ function updateLanguageTexts() {
     safeSetText('undoBtn', t.undo);
 
     // Labelit ja otsikot
-    var labels = document.querySelectorAll('.controls label');
+   var labels = document.querySelectorAll('.controls label');
     labels.forEach(lbl => {
         if (lbl.innerText.includes("virheprosentti") || lbl.innerText.includes("error rate")) {
-            var span = lbl.querySelector('span');
-            var spanVal = span ? span.outerHTML : "";
-            lbl.innerHTML = t.errorLabel + " " + spanVal;
+            if (lbl.childNodes && lbl.childNodes.length > 0) {
+                lbl.childNodes[0].nodeValue = t.errorLabel + " ";
+            }
         }
         if (lbl.innerText.includes("BPM")) {
             lbl.childNodes[0].nodeValue = t.bpmLabel + " ";
