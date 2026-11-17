@@ -837,6 +837,7 @@ document.getElementById('printBtn').onclick = function() {
     window.print();
 };
 
+// Päivitetään virheprosentin lukema lennosta liukusäädintä siirrettäessä
 var errorRateSlider = document.getElementById('errorRateSlider');
 var errorValDisplay = document.getElementById('errorValDisplay');
 
@@ -845,6 +846,7 @@ if (errorRateSlider && errorValDisplay) {
         errorValDisplay.innerText = this.value;
     };
 }
+
 
 document.getElementById('randomStrictFixBtn').onclick = function() {
     hideUndo();
