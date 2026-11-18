@@ -52,7 +52,6 @@ async function loadGistData() {
         { type: "Melnets", url: "melnets_part6.js" },
         { type: "Melnets", url: "melnets_part7.js" },
         { type: "Melnets", url: "melnets_part8.js" },
-		{ type: "Melnets", url: "melnets_test.js" },
 		{ type: "Sekalaiset", url: "folkwikiSet1.js" },
 		{ type: "Sekalaiset", url: "folkwikiSet2.js" },
 		{ type: "Sekalaiset", url: "folkwikiSet3.js" },
