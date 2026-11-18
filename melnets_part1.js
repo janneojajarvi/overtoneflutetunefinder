@@ -2949,10 +2949,6 @@ var melnets_part1 = [
   },
   {
     name: "Atholl Brose",
-    abc: "X:1\nT:Atholl Brose\nS:Toby A. Rider, Fiddle-L, 8/97\nS:Logan's -- 55\nO:Scottish\nE:7\nM:4/4\nK:D\n{gde}c{g}A3 {gAGAG}A4 {gef}e3A {gAGAG}A2d2|{gde}c{g}A3 {gAGAG}A3e {ag}a3f\n{gef}e3d|\\n{gde}c{g}A3 {gAGAG}A4 {gef}e3A {gAGAG}A2d2|{g}cde2 {g}G3{g}B {gf}g2G2\n{dc}d3B:|\\n{g}ce3 {gf}g3e {ag}a3e {gf}g3e|{g}ce3 {gf}g3e {ag}a4 {GdG}a3d|\\n{g}ce3 {gf}g3e {ag}a3e {gf}g3e|{gef}e3d {gf}g3d {gBd}BG3 {dc}d3{g}B|\\n{g}ce3 {gf}g3e {ag}a3e {gf}g3e|{g}ce3 {gf}g3e {ag}a4 {GdG}a2d2|\\n{g}c{GdG}e3 {gf}g2a2 {f}g3e {g}f3d|{g}efg2 {GdB}d3c {gBd}B{g}G3 {dc}d4||\"
-  },
-  {
-    name: "Atholl Brose",
     abc: "X:1\nT:Atholl Brose\nS:Logan's -- 55\nE:7\nM:4/4\nZ:posted by Toby Rider 8/97\nK:D\n{gde}c{g}A3 {gAGAG}A4 {gef}e3A {gAGAG}A2d2|{gde}c{g}A3 {gAGAG}A3e {ag}a3\nf\n{gef}e3d|\\n{gde}c{g}A3 {gAGAG}A4 {gef}e3A {gAGAG}A2d2|{g}cde2 {g}G3{g}B {gf}g2G2\n{dc}d3B:|\\n{g}ce3 {gf}g3e {ag}a3e {gf}g3e|{g}ce3 {gf}g3e {ag}a4 {GdG}a3d|\\n{g}ce3 {gf}g3e {ag}a3e {gf}g3e|{gef}e3d {gf}g3d {gBd}BG3 {dc}d3{g}B|\\n{g}ce3 {gf}g3e {ag}a3e {gf}g3e|{g}ce3 {gf}g3e {ag}a4 {GdG}a2d2|\\n{g}c{GdG}e3 {gf}g2a2 {f}g3e {g}f3d|{g}efg2 {GdB}d3c {gBd}B{g}G3 {dc}d4||\n\"
   },
   {
@@ -5038,7 +5034,7 @@ var melnets_part1 = [
   {
     name: "Blackberry Blossom",
     abc: "X:1\nT:Blackberry Blossom, The\nR:reel\nD:Mary Bergin: Feadoga Stain.\nD:Planxty: The Well below the Valley\nZ:id:hn-reel-117\nM:C|\nZ:posted by Bruce E. Baker 12/98\nK:G\nge|:dBAd BG~G2|dBBA B2ge|dBAd BG~G2|1 eaag abge:|2 eaag agef||\n~g3f gaba|~g3b agef|~g3f gbag|ea~a2 agef|\n~g3f gaba|~g3b a2ga|agaf gfed|eaag abge||"
-  },
+  }, 
   {
     name: "Blackberry Blossom",
     abc: "X:1\nT:Blackberry Blossom, The\nM:C|\nL:1/8\nR:reel\nK:G\nge|dBAc BAGA|~B3A B2ge|dBAc BAG2|eaag a2 ge|\\ndBAc BAGA|~B3A B2 ge|dBAc BAG2|eaag a2||*\nef|~g3f gaba|~g3b agef|~g3f ga~a2|ea~a2 agef\\n|~g3f gaba|~g3b a2 ga|bagf gfed|eaag a2||"
